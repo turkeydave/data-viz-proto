@@ -94,9 +94,9 @@ function init() {
 
 
       setTimeout(function(){
-          SinChart.makeChart();
-          MembersChart.makeChart();
-          MembershipsChart.makeChart();
+          //SinChart.makeChart();
+          //MembersChart.makeChart();
+          //MembershipsChart.makeChart();
           //ClassMetricsLineChart.makeChart();
           //ClassMetricsBarChart.makeChart();
       }, 500);
@@ -143,8 +143,9 @@ function changePosition(from, to, rowToUpdate) {
 function selectTile (ex){
     console.log('........ selectTile');
     var id = 'tileContainer' + label;
+    var inner = 'tileInner' + label;
     removeTemporaryTiles();
-    createTile(id, '<div>Hi</div>', false, true);
+    createTile(id, '<div style="padding-left:20px; padding-top:20px" id="' + inner +'">Hi</div>', false, true);
 }
 
 var removalInProgress = false;
@@ -208,7 +209,8 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
     width      : 0,
     x          : 0,
     y          : 0,
-    isTemp     : isFromMenu ? true : false
+    isTemp     : isFromMenu ? true : false,
+    isLoaded     : false
   };
 
   // Add tile properties to our element for quick lookup
@@ -267,6 +269,11 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
   function onRelease() {
     console.log('........onRelease');
       tile.isTemp = false;
+      if(!tile.isLoaded){
+        // todo: when to set this
+        tile.isLoaded = true;
+        loadTileContents(this._eventTarget.id);
+      }
     // Move tile back to last position if released out of bounds
     this.hitTest($list, 0)
       ? layoutInvalidated()
@@ -292,6 +299,19 @@ function removeTile(button){
     Draggable.get('#' + id).kill();
     $(tileContainer).remove();
     layoutInvalidated();
+};
+
+function loadTileContents(tileId){
+    var inner = tileId.replace('Container', 'Inner');
+    if(tileId === 'tileContainer3'){
+        $('#' + inner).html('<svg id="memberDoughnut" class="mypiechart"></svg>');
+        MembersChart.makeChart();
+      }
+    if(tileId === 'tileContainer4'){
+        MembersChartNumbers.makeChart(inner);
+    }
+// createTile('div2', '<div style="padding-left:20px; padding-top:20px"><svg id="memberDoughnut" class="mypiechart"></svg></div>', false);
+
 };
 
 // ========================================================================
@@ -369,8 +389,12 @@ function layoutInvalidated(rowToUpdate) {
         zIndex    : zIndex
       };
 
-      tile.x = 150;
+      // move temps to where the menu hover was ....
+      if(tile.isTemp){
+        tile.x = 150;
         tile.y = -55;
+      }
+
 
       timeline.fromTo(element, time, from, to, "reflow");
     }
