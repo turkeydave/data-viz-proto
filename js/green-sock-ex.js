@@ -105,9 +105,9 @@ function init() {
 
           // ------- divContainerClassMetricsBar
           // Class metrics coming from cube .... bar chart
-          ClassMetricsBarChart.makeChart();
-
-
+          setTimeout(function(){
+              ClassMetricsBarChart.makeChart();
+          }, 500);
 
           //SinChart.makeChart();
 

@@ -32,6 +32,110 @@ function sinAndCos() {
     ];
 }
 
+var helperCache = {
+    monthNames : [
+        {val: "Jan"},
+        {val: "Feb"},
+        {val: "Mar"},
+        {val: "Apr"},
+        {val: "May"},
+        {val: "Jun"},
+        {val: "Jul"},
+        {val: "Aug"},
+        {val: "Sept"},
+        {val: "Oct"},
+        {val: "Nov"},
+        {val: "Dec"},
+        {val: "Tot"}
+    ],
+    userMetricsLoaded : false,
+    attData : [
+        {x: 0, y: 0},
+        {x: 1, y: 0},
+        {x: 2, y: 0},
+        {x: 3, y: 0},
+        {x: 4, y: 0},
+        {x: 5, y: 0},
+        {x: 6, y: 0},
+        {x: 7, y: 0},
+        {x: 8, y: 0},
+        {x: 9, y: 0},
+        {x: 10, y: 0},
+        {x: 11, y: 0},
+        {x: 12, y: 0}
+     ], 
+    rezyData : [
+            {x: 0, y: 0},
+            {x: 1, y: 0},
+            {x: 2, y: 0},
+            {x: 3, y: 0},
+            {x: 4, y: 0},
+            {x: 5, y: 0},
+            {x: 6, y: 0},
+            {x: 7, y: 0},
+            {x: 8, y: 0},
+            {x: 9, y: 0},
+            {x: 10, y: 0},
+            {x: 11, y: 0},
+            {x: 12, y: 0}
+        ],
+    translateServerData : function(data){
+        helperCache.userMetricsLoaded = true;
+        if(data.January !== undefined){
+            helperCache.attData[0].y = data.January.Fact_Attendance_Count;
+            helperCache.rezyData[0].y = data.January.Fact_Reservation_Count;
+        }
+        if(data.February !== undefined){
+            helperCache.attData[1].y = data.February.Fact_Attendance_Count;
+            helperCache.rezyData[1].y = data.February.Fact_Reservation_Count;
+        }
+        if(data.March !== undefined){
+            helperCache.attData[2].y = data.March.Fact_Attendance_Count;
+            helperCache.rezyData[2].y = data.March.Fact_Reservation_Count;
+        }
+        if(data.April !== undefined){
+            helperCache.attData[3].y = data.April.Fact_Attendance_Count;
+            helperCache.rezyData[3].y = data.April.Fact_Reservation_Count;
+        }
+        if(data.May !== undefined){
+            helperCache.attData[4].y = data.May.Fact_Attendance_Count;
+            helperCache.rezyData[4].y = data.May.Fact_Reservation_Count;
+        }
+        if(data.June !== undefined){
+            helperCache.attData[5].y = data.June.Fact_Attendance_Count;
+            helperCache.rezyData[5].y = data.June.Fact_Reservation_Count;
+        }
+        if(data.July !== undefined){
+            helperCache.attData[6].y = data.July.Fact_Attendance_Count;
+            helperCache.rezyData[6].y = data.July.Fact_Reservation_Count;
+        }
+        if(data.August !== undefined){
+            helperCache.attData[7].y = data.August.Fact_Attendance_Count;
+            helperCache.rezyData[7].y = data.August.Fact_Reservation_Count;
+        }
+        if(data.September !== undefined){
+            helperCache.attData[8].y = data.September.Fact_Attendance_Count;
+            helperCache.rezyData[8].y = data.September.Fact_Reservation_Count;
+        }
+        if(data.October !== undefined){
+            helperCache.attData[9].y = data.October.Fact_Attendance_Count;
+            helperCache.rezyData[9].y = data.October.Fact_Reservation_Count;
+        }
+        if(data.November !== undefined){
+            helperCache.attData[10].y = data.November.Fact_Attendance_Count;
+            helperCache.rezyData[10].y = data.November.Fact_Reservation_Count;
+        }
+        if(data.December !== undefined){
+            helperCache.attData[11].y = data.December.Fact_Attendance_Count;
+            helperCache.rezyData[11].y = data.December.Fact_Reservation_Count;
+        }
+        if(data.All !== undefined){
+            helperCache.attData[12].y = data.All.Fact_Attendance_Count;
+            helperCache.rezyData[12].y = data.All.Fact_Reservation_Count;
+        }
+    }
+};
+
 var SinChart = {
     makeChart : function(){
         var chart;
@@ -185,126 +289,16 @@ var MembershipsChart = {
 
 var ClassMetricsLineChart = {
     makeChart : function(){
-        // used for nice labels on x-axis (see tick format function)
-        var monthNames = [];
-        monthNames.push({val: "Jan"});
-        monthNames.push({val: "Feb"});
-        monthNames.push({val: "Mar"});
-        monthNames.push({val: "Apr"});
-        monthNames.push({val: "May"});
-        monthNames.push({val: "Jun"});
-        monthNames.push({val: "Jul"});
-        monthNames.push({val: "Aug"});
-        monthNames.push({val: "Sept"});
-        monthNames.push({val: "Oct"});
-        monthNames.push({val: "Nov"});
-        monthNames.push({val: "Dec"});
-        monthNames.push({val: "Tot"});
-
-        var attData = [], rezyData = [];
-        // jan
-        attData.push({x: 0, y: 0});
-        rezyData.push({x: 0, y: 0});
-        // feb
-        attData.push({x: 1, y: 0});
-        rezyData.push({x: 1, y: 0});
-        // mar
-        attData.push({x: 2, y: 0});
-        rezyData.push({x: 2, y: 0});
-        // apr
-        attData.push({x: 3, y: 0});
-        rezyData.push({x: 3, y: 0});
-        // mauy
-        attData.push({x: 4, y: 0});
-        rezyData.push({x: 4, y: 0});
-        // jun
-        attData.push({x: 5, y: 0});
-        rezyData.push({x: 5, y: 0});
-        // jul
-        attData.push({x: 6, y: 0});
-        rezyData.push({x: 6, y: 0});
-        // aug
-        attData.push({x: 7, y: 0});
-        rezyData.push({x: 7, y: 0});
-        // sept
-        attData.push({x: 8, y: 0});
-        rezyData.push({x: 8, y: 0});
-        // oct
-        attData.push({x: 9, y: 0});
-        rezyData.push({x: 9, y: 0});
-        // nov
-        attData.push({x: 10, y: 0});
-        rezyData.push({x: 10, y: 0});
-        // dec
-        attData.push({x: 11, y: 0});
-        rezyData.push({x: 11, y: 0});
-        // tot
-        attData.push({x: 12, y: 0});
-        rezyData.push({x: 12, y: 0});
-
-        var jqxhr = $.get( "http://192.168.49.140:5102/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016", function(data) {
-            if(data.January !== undefined){
-                attData[0].y = data.January.Fact_Attendance_Count;
-                rezyData[0].y = data.January.Fact_Reservation_Count;
-            }
-            if(data.February !== undefined){
-                attData[1].y = data.February.Fact_Attendance_Count;
-                rezyData[1].y = data.February.Fact_Reservation_Count;
-            }
-            if(data.March !== undefined){
-                attData[2].y = data.March.Fact_Attendance_Count;
-                rezyData[2].y = data.March.Fact_Reservation_Count;
-            }
-            if(data.April !== undefined){
-                attData[3].y = data.April.Fact_Attendance_Count;
-                rezyData[3].y = data.April.Fact_Reservation_Count;
-            }
-            if(data.May !== undefined){
-                attData[4].y = data.May.Fact_Attendance_Count;
-                rezyData[4].y = data.May.Fact_Reservation_Count;
-            }
-            if(data.June !== undefined){
-                attData[5].y = data.June.Fact_Attendance_Count;
-                rezyData[5].y = data.June.Fact_Reservation_Count;
-            }
-            if(data.July !== undefined){
-                attData[6].y = data.July.Fact_Attendance_Count;
-                rezyData[6].y = data.July.Fact_Reservation_Count;
-            }
-            if(data.August !== undefined){
-                attData[7].y = data.August.Fact_Attendance_Count;
-                rezyData[7].y = data.August.Fact_Reservation_Count;
-            }
-            if(data.September !== undefined){
-                attData[8].y = data.September.Fact_Attendance_Count;
-                rezyData[8].y = data.September.Fact_Reservation_Count;
-            }
-            if(data.October !== undefined){
-                attData[9].y = data.October.Fact_Attendance_Count;
-                rezyData[9].y = data.October.Fact_Reservation_Count;
-            }
-            if(data.November !== undefined){
-                attData[10].y = data.November.Fact_Attendance_Count;
-                rezyData[10].y = data.November.Fact_Reservation_Count;
-            }
-            if(data.December !== undefined){
-                attData[11].y = data.December.Fact_Attendance_Count;
-                rezyData[11].y = data.December.Fact_Reservation_Count;
-            }
-            if(data.All !== undefined){
-                attData[12].y = data.All.Fact_Attendance_Count;
-                rezyData[12].y = data.All.Fact_Reservation_Count;
-            }
-
+        var doChartWork = function(){
             //Line chart data should be sent as an array of series objects.
             var chartData = [
                 {
-                    values: attData,      //values - represents the array of {x,y} data points
+                    values: helperCache.attData,      //values - represents the array of {x,y} data points
                     key: 'Attendance Count', //key  - the name of the series.
                     color: '#ff7f0e'  //color - optional: choose your own line color.
                 },
                 {
-                    values: rezyData,
+                    values: helperCache.rezyData,
                     key: 'Reservation Count',
                     color: '#2ca02c'
                 }
@@ -325,7 +319,7 @@ var ClassMetricsLineChart = {
                     .axisLabel('Months')
                     .tickValues([0,1,2,3,4,5,6,7,8,9,10,11,12])
                     .tickFormat(function(d) {
-                        return monthNames[d].val;
+                        return helperCache.monthNames[d].val;
                     });
                 //.tickFormat(d3.format('s'));
 
@@ -344,143 +338,41 @@ var ClassMetricsLineChart = {
                 //nv.utils.windowResize(function() { chart.update() });
                 return chart;
             });
+        }; // doChartWork
 
-        })
-            .done(function() {
-                //alert( "second success" );
-            })
-            .fail(function() {
-                alert( "error" );
-            });
-        // .always(function() {
-        //     alert( "finished" );
-        // });
+        if(!helperCache.userMetricsLoaded){
+            var jqxhr = $.get( "http://192.168.49.140:5102/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016", function(data) {
+                console.log('.... loading user metric data from .net backend ....');
+                    helperCache.translateServerData(data);
+                    doChartWork();
+                })
+                .done(function() {
+                    //alert( "second success" );
+                })
+                .fail(function() {
+                    alert( "error" );
+                });
 
-    }
+        } else {
+            doChartWork();
+        }
+
+    } // makeChart
 };
 
 var ClassMetricsBarChart = {
     makeChart : function(){
-        // used for nice labels on x-axis (see tick format function)
-        var monthNames = [];
-        monthNames.push({val: "Jan"});
-        monthNames.push({val: "Feb"});
-        monthNames.push({val: "Mar"});
-        monthNames.push({val: "Apr"});
-        monthNames.push({val: "May"});
-        monthNames.push({val: "Jun"});
-        monthNames.push({val: "Jul"});
-        monthNames.push({val: "Aug"});
-        monthNames.push({val: "Sept"});
-        monthNames.push({val: "Oct"});
-        monthNames.push({val: "Nov"});
-        monthNames.push({val: "Dec"});
-        monthNames.push({val: "Tot"});
 
-        var attData = [], rezyData = [];
-        // jan
-        attData.push({x: 0, y: 0});
-        rezyData.push({x: 0, y: 0});
-        // feb
-        attData.push({x: 1, y: 0});
-        rezyData.push({x: 1, y: 0});
-        // mar
-        attData.push({x: 2, y: 0});
-        rezyData.push({x: 2, y: 0});
-        // apr
-        attData.push({x: 3, y: 0});
-        rezyData.push({x: 3, y: 0});
-        // mauy
-        attData.push({x: 4, y: 0});
-        rezyData.push({x: 4, y: 0});
-        // jun
-        attData.push({x: 5, y: 0});
-        rezyData.push({x: 5, y: 0});
-        // jul
-        attData.push({x: 6, y: 0});
-        rezyData.push({x: 6, y: 0});
-        // aug
-        attData.push({x: 7, y: 0});
-        rezyData.push({x: 7, y: 0});
-        // sept
-        attData.push({x: 8, y: 0});
-        rezyData.push({x: 8, y: 0});
-        // oct
-        attData.push({x: 9, y: 0});
-        rezyData.push({x: 9, y: 0});
-        // nov
-        attData.push({x: 10, y: 0});
-        rezyData.push({x: 10, y: 0});
-        // dec
-        attData.push({x: 11, y: 0});
-        rezyData.push({x: 11, y: 0});
-        // tot
-        attData.push({x: 12, y: 0});
-        rezyData.push({x: 12, y: 0});
-
-        var jqxhr = $.get( "http://192.168.49.140:5102/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016", function(data) {
-            if(data.January !== undefined){
-                attData[0].y = data.January.Fact_Attendance_Count;
-                rezyData[0].y = data.January.Fact_Reservation_Count;
-            }
-            if(data.February !== undefined){
-                attData[1].y = data.February.Fact_Attendance_Count;
-                rezyData[1].y = data.February.Fact_Reservation_Count;
-            }
-            if(data.March !== undefined){
-                attData[2].y = data.March.Fact_Attendance_Count;
-                rezyData[2].y = data.March.Fact_Reservation_Count;
-            }
-            if(data.April !== undefined){
-                attData[3].y = data.April.Fact_Attendance_Count;
-                rezyData[3].y = data.April.Fact_Reservation_Count;
-            }
-            if(data.May !== undefined){
-                attData[4].y = data.May.Fact_Attendance_Count;
-                rezyData[4].y = data.May.Fact_Reservation_Count;
-            }
-            if(data.June !== undefined){
-                attData[5].y = data.June.Fact_Attendance_Count;
-                rezyData[5].y = data.June.Fact_Reservation_Count;
-            }
-            if(data.July !== undefined){
-                attData[6].y = data.July.Fact_Attendance_Count;
-                rezyData[6].y = data.July.Fact_Reservation_Count;
-            }
-            if(data.August !== undefined){
-                attData[7].y = data.August.Fact_Attendance_Count;
-                rezyData[7].y = data.August.Fact_Reservation_Count;
-            }
-            if(data.September !== undefined){
-                attData[8].y = data.September.Fact_Attendance_Count;
-                rezyData[8].y = data.September.Fact_Reservation_Count;
-            }
-            if(data.October !== undefined){
-                attData[9].y = data.October.Fact_Attendance_Count;
-                rezyData[9].y = data.October.Fact_Reservation_Count;
-            }
-            if(data.November !== undefined){
-                attData[10].y = data.November.Fact_Attendance_Count;
-                rezyData[10].y = data.November.Fact_Reservation_Count;
-            }
-            if(data.December !== undefined){
-                attData[11].y = data.December.Fact_Attendance_Count;
-                rezyData[11].y = data.December.Fact_Reservation_Count;
-            }
-            if(data.All !== undefined){
-                attData[12].y = data.All.Fact_Attendance_Count;
-                rezyData[12].y = data.All.Fact_Reservation_Count;
-            }
-
+        var doChartWork = function(){
             //Line chart data should be sent as an array of series objects.
             var chartData = [
                 {
-                    values: attData,      //values - represents the array of {x,y} data points
+                    values: helperCache.attData,      //values - represents the array of {x,y} data points
                     key: 'Attendance Count', //key  - the name of the series.
                     color: '#ff7f0e'  //color - optional: choose your own line color.
                 },
                 {
-                    values: rezyData,
+                    values: helperCache.rezyData,
                     key: 'Reservation Count',
                     color: '#2ca02c'
                 }
@@ -501,7 +393,7 @@ var ClassMetricsBarChart = {
                     .axisLabel('Months')
                     .tickValues([0,1,2,3,4,5,6,7,8,9,10,11,12])
                     .tickFormat(function(d) {
-                        return monthNames[d].val;
+                        return helperCache.monthNames[d].val;
                     });
                 //.tickFormat(d3.format('s'));
 
@@ -520,17 +412,24 @@ var ClassMetricsBarChart = {
                 //nv.utils.windowResize(function() { chart.update() });
                 return chart;
             });
+        }; // doChartWork
 
-        })
+        if(!helperCache.userMetricsLoaded){
+            var jqxhr = $.get( "http://192.168.49.140:5102/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016", function(data) {
+                console.log('.... loading user metric data from .net backend ....');
+                helperCache.translateServerData(data);
+                doChartWork();
+            })
             .done(function() {
                 //alert( "second success" );
             })
             .fail(function() {
                 alert( "error" );
             });
-        // .always(function() {
-        //     alert( "finished" );
-        // });
 
-    }
+        } else {
+            doChartWork();
+        }
+
+    } // makeChart
 };
