@@ -9,8 +9,8 @@ var fixedSize = false; // When true, each tile's colspan will be fixed to 1
 var oneColumn = false; // When true, grid will only have 1 column and tiles have fixed colspan of 1
 var threshold = "50%"; // This is amount of overlap between tiles needed to detect a collision
 
-var $add  = $("#add");
-var $add2  = $("#add2");
+var $addMemberSummary  = $("#addMemberSummary");
+var $addMembershipsPie  = $("#addMembershipsPie");
 var $list = $("#list");
 var $mode = $("input[name='layout']");
 
@@ -30,13 +30,15 @@ var gutterStep = null;
 var shadow1 = "0 1px 3px  0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.6)";
 var shadow2 = "0 6px 10px 0 rgba(0, 0, 0, 0.3), 0 2px 2px 0 rgba(0, 0, 0, 0.2)";
 
+var currMouseOverX = 150;
+
 $(window).resize(resize);
 //$add.click(createTile);
 //$add.mousedown(selectTile);
-$add.mouseover(selectTile);
-$add.mouseout(detectIfReal);
-$add2.mouseover(selectTile);
-$add2.mouseout(detectIfReal);
+$addMemberSummary.mouseover(selectTile);
+$addMemberSummary.mouseout(detectIfReal);
+$addMembershipsPie.mouseover(selectTile);
+$addMembershipsPie.mouseout(detectIfReal);
 $mode.change(init);
 
 init();
@@ -79,14 +81,14 @@ function init() {
 
   function populateBoard() {
 
-      createTile('divClassMetricsContainer', '<div id="classMetricsChart" style="width:100%;height:90%"><svg style="height:95%; width:95%"></svg></div>', true);
+      createTile('divContainerClassMetricsChart', '<div id="divInnerClassMetricsChart" style="width:100%;height:90%"><svg style="height:95%; width:95%"></svg></div>', true);
       label++;
-      // createTile('div2', '<div style="padding-left:20px; padding-top:20px"><svg id="memberDoughnut" class="mypiechart"></svg></div>', false);
-      //label++;
-      // createTile('div3', '<div style="padding-left:20px; padding-top:20px"><svg id="membershipsDoughnut" class="mypiechart"></svg></div>', false);
-      //label++;
-      // createTile('divClassMetricsBarContainer', '<div id="classMetricsBarChart" style="width:100%;height:100%"><svg style="height:95%; width:95%"></svg></div>', true);
-      //label++;
+
+      createTile('divContainerMemberDoughnutChart', '<div id="divInnerMemberDoughnutChart" style="padding-left:20px; padding-top:20px"><svg id="memberDoughnut" class="mypiechart"></svg></div>', false);
+      label++;
+
+      createTile('divContainerClassMetricsBar', '<div id="divInnerClassMetricsBarChart" style="width:100%;height:100%"><svg style="height:95%; width:95%"></svg></div>', true);
+      label++;
       //
       // // createTile('div4', '<div>Four</div>', true);
       // createTile('divLineChartContainer', '<div id="divLineChart" style="width:100%;height:100%"><svg style="height:95%; width:95%"></svg></div>', true);
@@ -94,11 +96,24 @@ function init() {
 
 
       setTimeout(function(){
+          // ----divContainerClassMetricsChart
+          // Class metrics coming from cube .... line chart
+          ClassMetricsLineChart.makeChart();
+
+          // Members doughnut chart
+          MembersChart.makeChart();
+
+          // ------- divContainerClassMetricsBar
+          // Class metrics coming from cube .... bar chart
+          ClassMetricsBarChart.makeChart();
+
+
+
           //SinChart.makeChart();
-          //MembersChart.makeChart();
+
           //MembershipsChart.makeChart();
-          //ClassMetricsLineChart.makeChart();
-          //ClassMetricsBarChart.makeChart();
+
+
       }, 500);
 
       resize();
@@ -140,30 +155,6 @@ function changePosition(from, to, rowToUpdate) {
 // ========================================================================
 //  CREATE TILE
 // ========================================================================
-function selectTile (ex){
-    console.log('........ selectTile');
-    var id = 'tileContainer' + label;
-    var inner = 'tileInner' + label;
-    removeTemporaryTiles();
-    createTile(id, '<div style="padding-left:20px; padding-top:20px" id="' + inner +'">Hi</div>', false, true);
-}
-
-var removalInProgress = false;
-function  detectIfReal() {
-    if(!removalInProgress){
-        removalInProgress = true;
-        // give them time to press and use it ....
-        // setTimeout(function(){
-        //     removalInProgress = false;
-        //     removeTemporaryTiles();
-        // }, 2000);
-        console.log('........ detectIfReal');
-        // todo; how to determine if moved??
-    } else {
-        console.log('........ removal in progress');
-    }
-}
-
 function createTile(id, innerHtml, isDouble, isFromMenu) {
 
   var colspan = fixedSize || oneColumn ? 1 : (isDouble ? 2 : 1);
@@ -220,7 +211,7 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
   layoutInvalidated();
 
   function onPress() {
-      console.log('........onRelease');
+      console.log('........onPress');
     lastX = this.x;
     tile.isDragging = true;
     tile.lastIndex  = tile.index;
@@ -270,7 +261,7 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
     console.log('........onRelease');
       tile.isTemp = false;
       if(!tile.isLoaded){
-        // todo: when to set this
+        // todo: when to set this ??
         tile.isLoaded = true;
         loadTileContents(this._eventTarget.id);
       }
@@ -291,28 +282,6 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
     tile.isDragging = false;
   }
 }
-
-function removeTile(button){
-    var tileContainer = button.parentElement;
-    var id = tileContainer.id;
-    // kill draggable
-    Draggable.get('#' + id).kill();
-    $(tileContainer).remove();
-    layoutInvalidated();
-};
-
-function loadTileContents(tileId){
-    var inner = tileId.replace('Container', 'Inner');
-    if(tileId === 'tileContainer3'){
-        $('#' + inner).html('<svg id="memberDoughnut" class="mypiechart"></svg>');
-        MembersChart.makeChart();
-      }
-    if(tileId === 'tileContainer4'){
-        MembersChartNumbers.makeChart(inner);
-    }
-// createTile('div2', '<div style="padding-left:20px; padding-top:20px"><svg id="memberDoughnut" class="mypiechart"></svg></div>', false);
-
-};
 
 // ========================================================================
 //  LAYOUT INVALIDATED
@@ -391,8 +360,8 @@ function layoutInvalidated(rowToUpdate) {
 
       // move temps to where the menu hover was ....
       if(tile.isTemp){
-        tile.x = 150;
-        tile.y = -55;
+        tile.x = currMouseOverX;
+        tile.y = -55; //-100; this works .... if covered no mouse out event fires... but couldn't hover on another item without closing this one ....
       }
 
 
@@ -427,6 +396,69 @@ function layoutInvalidated(rowToUpdate) {
     timeline.to($list, 0.2, { height: height }, "reflow");
   }
 }
+
+// -------------------------------- functional stuff --------------------------
+// rule: outer div is 'tileContainer' + identifier
+//       inner div is 'tileInner' + identifier
+// used for removing tile at least.
+function selectTile (ex){
+    //console.log('........ selectTile');
+    // todo: use clientY for when we have menu on the side bar
+    var clientX = ex.clientX > 100 ? ex.clientX - 100 : ex.clientX;
+    currMouseOverX = clientX;
+
+    removeTemporaryTiles();
+    if(ex.currentTarget.id === 'addMemberSummary') {
+        createTile('tileContainerMemberSummary', '<div style="padding-left:0; padding-top:0;" id="tileInnerMemberSummary"><img src="img/member-summary-chart.png" style="opacity: .55"></div>', false, true);
+    } else if(ex.currentTarget.id === 'addMembershipsPie'){
+            createTile('tileContainerMembershipPie', '<div style="padding-left:0; padding-top:50px;height:100%" id="tileInnerMembershipPie"><img src="img/membership-half-pie.png" style="opacity: .55"></div>', false, true);
+    } else {
+        // auto create id's
+        var id = 'tileContainer' + label;
+        var inner = 'tileInner' + label;
+        createTile(id, '<div style="padding-left:20px; padding-top:20px;" id="' + inner +'">Hi</div>', false, true);
+    }
+
+}
+
+var removalInProgress = false;
+function  detectIfReal() {
+    console.log('........ detectIfReal');
+    // if(!removalInProgress){
+    //     removalInProgress = true;
+    //     // give them time to press and use it ....
+    //     // setTimeout(function(){
+    //     //     removalInProgress = false;
+    //     //     removeTemporaryTiles();
+    //     // }, 2000);
+    //     console.log('........ detectIfReal');
+    //     // todo; how to determine if moved??
+    // } else {
+    //     console.log('........ removal in progress');
+    // }
+}
+
+
+function removeTile(button){
+    var tileContainer = button.parentElement;
+    var id = tileContainer.id;
+    // kill draggable
+    Draggable.get('#' + id).kill();
+    $(tileContainer).remove();
+    layoutInvalidated();
+};
+
+// load the actual chart into our tile ... triggered after onRelease of dragging
+function loadTileContents(tileId){
+    var inner = tileId.replace('Container', 'Inner');
+
+    if(tileId === 'tileContainerMemberSummary'){
+        MembersChartNumbers.makeChart(inner);
+    } else if(tileId === 'tileContainerMembershipPie'){
+        $('#' + inner).html('<svg id="membershipPie"></svg><');
+        MembershipsChart.makeChart();
+    }
+};
 
 function removeTemporaryTiles() {
     console.log('........ removeTemporaryTiles');

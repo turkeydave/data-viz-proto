@@ -93,7 +93,7 @@ var MembersChart = {
                 .id('donut1'); // allow custom CSS for this one svg
             chart1.title("Members");
             chart1.pie.donutLabelsOutside(true).donut(true);
-            d3.select("#memberDoughnut")
+            d3.select("#divInnerMemberDoughnutChart svg")
                 .datum(testdata)
                 .transition().duration(1200)
                 .call(chart1);
@@ -132,11 +132,11 @@ var MembersChartNumbers = {
             {key: "Cancelled", y: 7}
         ];
         var html = "<div style='position:relative'>";
-            html += "<div style='width:100%; position:absolute; top:0px; text-align:center;'>Members Summary</div>";
-            html += "<div style='width:50%; position:absolute; top:35px; left: 0px; text-align:center;'><div>PROSPECTS</div><div style='font-size:48pt;'>5</div></div>";
-            html += "<div style='width:50%; position:absolute; top:35px; left: 50%; text-align:center;'><div>NEW</div><div style='font-size:48pt;'>22</div></div>";
-            html += "<div style='width:50%; position:absolute; top:200px; left: 0px; text-align:center;'><div>AT RISK</div><div style='font-size:48pt;'>9</div></div>";
-            html += "<div style='width:50%; position:absolute; top:200px; left: 50%; text-align:center;'><div>CANCELLED</div><div style='font-size:48pt;'>7</div></div>";
+            html += "<div style='width:100%; position:absolute; top:0px; text-align:center; color: #FFF'>Members Summary</div>";
+            html += "<div style='width:50%; position:absolute; top:35px; left: 0px; text-align:center; color: #008000;'><div>PROSPECTS</div><div style='font-size:48pt;'>5</div></div>";
+            html += "<div style='width:50%; position:absolute; top:35px; left: 50%; text-align:center; color: #5EC0E8;'><div>NEW</div><div style='font-size:48pt;'>22</div></div>";
+            html += "<div style='width:50%; position:absolute; top:200px; left: 0px; text-align:center; color: #EA6060;'><div>AT RISK</div><div style='font-size:48pt;'>9</div></div>";
+            html += "<div style='width:50%; position:absolute; top:200px; left: 50%; text-align:center; color: #FFA500;'><div>CANCELLED</div><div style='font-size:48pt;'>7</div></div>";
         html += "</div>";
 
         $('#' + id).html(html);
@@ -172,7 +172,7 @@ var MembershipsChart = {
             chart2.pie
                 .startAngle(function(d) { return d.startAngle/2 -Math.PI/2 })
                 .endAngle(function(d) { return d.endAngle/2 -Math.PI/2 });
-            d3.select("#membershipsDoughnut")
+            d3.select("#tileInnerMembershipPie svg")
             //.datum(historicalBarChart)
                 .datum(testdata)
                 .transition().duration(1200)
@@ -336,7 +336,7 @@ var ClassMetricsLineChart = {
                 // /* Done setting the chart up? Time to render it!*/
                 // var myData = sinAndCos();   //You need data...
 
-                d3.select('#classMetricsChart svg')    //Select the <svg> element you want to render the chart in.
+                d3.select('#divInnerClassMetricsChart svg')    //Select the <svg> element you want to render the chart in.
                     .datum(chartData)         //Populate the <svg> element with chart data...
                     .call(chart);          //Finally, render the chart!
 
@@ -512,7 +512,7 @@ var ClassMetricsBarChart = {
                 // /* Done setting the chart up? Time to render it!*/
                 // var myData = sinAndCos();   //You need data...
 
-                d3.select('#classMetricsBarChart svg')    //Select the <svg> element you want to render the chart in.
+                d3.select('#divInnerClassMetricsBarChart svg')    //Select the <svg> element you want to render the chart in.
                     .datum(chartData)         //Populate the <svg> element with chart data...
                     .call(chart);          //Finally, render the chart!
 
