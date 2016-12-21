@@ -1,5 +1,48 @@
-//All code created by Blake Bowen
+//Grid Greensock code created by Blake Bowen
 //Forked from: http://codepen.io/osublake/pen/RNLdpz/
+
+var chartMap = {
+    classMetricsLine : {
+        default : true,
+        container : 'divContainerClassMetricsChart',
+        inner : 'divInnerClassMetricsChart',
+        linkId : null
+    },
+    classMetricsBar : {
+        default : true,
+        container : 'divContainerClassMetricsBar',
+        inner : 'divInnerClassMetricsBarChart',
+        linkId : null
+    },
+    memberDoughnut : {
+        default : true,
+        container : 'divContainerMemberDoughnutChart',
+        inner : 'divInnerMemberDoughnutChart',
+        linkId : null
+    },
+    memberSummaryNumbers : {
+        default : false,
+        container : 'tileContainerMemberSummary',
+        inner : 'tileInnerMemberSummary',
+        linkId : 'addMemberSummary'
+    },
+    membershipPie : {
+        default : false,
+        container : 'tileContainerMembershipPie',
+        inner : 'tileInnerMembershipPie',
+        linkId : 'addMembershipsPie'
+    },
+    sineWaveLine : {
+        default : false,
+        container : 'tileContainerSineWave',
+        inner : 'tileInnerSineWave',
+        linkId : 'addSineWave'
+    }
+
+};
+
+var loadedCharts = [];
+
 
 // GRID OPTIONS
 var rowSize   = 400;
@@ -11,6 +54,15 @@ var threshold = "50%"; // This is amount of overlap between tiles needed to dete
 
 var $addMemberSummary  = $("#addMemberSummary");
 var $addMembershipsPie  = $("#addMembershipsPie");
+//$add.click(createTile);
+//$add.mousedown(selectTile);
+$addMemberSummary.on('mouseover', selectTile);
+$addMemberSummary.on('mouseout', removeIfNoAction);
+// $addMemberSummary.mouseover(selectTile);
+// $addMemberSummary.mouseout(removeIfNoAction);
+$addMembershipsPie.on('mouseover', selectTile);
+$addMembershipsPie.on('mouseout', removeIfNoAction);
+
 var $list = $("#list");
 var $mode = $("input[name='layout']");
 
@@ -33,13 +85,9 @@ var shadow2 = "0 6px 10px 0 rgba(0, 0, 0, 0.3), 0 2px 2px 0 rgba(0, 0, 0, 0.2)";
 var currMouseOverX = 150;
 
 $(window).resize(resize);
-//$add.click(createTile);
-//$add.mousedown(selectTile);
-$addMemberSummary.mouseover(selectTile);
-$addMemberSummary.mouseout(detectIfReal);
-$addMembershipsPie.mouseover(selectTile);
-$addMembershipsPie.mouseout(detectIfReal);
+
 $mode.change(init);
+
 
 init();
 
@@ -82,12 +130,15 @@ function init() {
   function populateBoard() {
 
       createTile('divContainerClassMetricsChart', '<div id="divInnerClassMetricsChart" style="width:100%;height:90%"><svg style="height:95%; width:95%"></svg></div>', true);
+      loadedCharts.push(chartMap.classMetricsLine.container);
       label++;
 
       createTile('divContainerMemberDoughnutChart', '<div id="divInnerMemberDoughnutChart" style="padding-left:20px; padding-top:20px"><svg id="memberDoughnut" class="mypiechart"></svg></div>', false);
+      loadedCharts.push(chartMap.memberDoughnut.container);
       label++;
 
       createTile('divContainerClassMetricsBar', '<div id="divInnerClassMetricsBarChart" style="width:100%;height:100%"><svg style="height:95%; width:95%"></svg></div>', true);
+      loadedCharts.push(chartMap.classMetricsBar.container);
       label++;
       //
       // // createTile('div4', '<div>Four</div>', true);
@@ -105,9 +156,11 @@ function init() {
 
           // ------- divContainerClassMetricsBar
           // Class metrics coming from cube .... bar chart
+          //    Note: only doing setTimeout here so I don't have to make another data call ....
           setTimeout(function(){
               ClassMetricsBarChart.makeChart();
-          }, 500);
+          }, 1000);
+
 
           //SinChart.makeChart();
 
@@ -162,16 +215,6 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
     var element = $('<div></div>').addClass("tile").attr("id", id)
         .append('<button style="position:absolute;bottom:0;right:0" onClick="removeTile(this)">remove</button>').append(innerHtml);
 
-    // if(isFromMenu){
-    //     element.on('mouseenter', function(){
-    //         alert('inner mouse enter');
-    //     });
-    //     element.on('mouseleave', function(){
-    //         alert('inner mouse leave');
-    //     });
-    // }
-
-
   label++;
   var lastX   = 0;
 
@@ -211,12 +254,12 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
   layoutInvalidated();
 
   function onPress() {
-      console.log('........onPress');
+      //console.log('........onPress');
     lastX = this.x;
     tile.isDragging = true;
     tile.lastIndex  = tile.index;
     tile.isTemp = false;
-
+      //toggleOptionButton(this._eventTarget.id, false);
     TweenLite.to(element, 0.2, {
       autoAlpha : 0.75,
       boxShadow : shadow2,
@@ -258,13 +301,19 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
   }
 
   function onRelease() {
-    console.log('........onRelease');
+    //console.log('........onRelease');
       tile.isTemp = false;
+      //toggleOptionButton(this._eventTarget.id, false);
       if(!tile.isLoaded){
         // todo: when to set this ??
         tile.isLoaded = true;
         loadTileContents(this._eventTarget.id);
       }
+
+    // // testing
+    //   tile.height = rowSize;
+    //   tile.width = tile.colspan * colSize;
+
     // Move tile back to last position if released out of bounds
     this.hitTest($list, 0)
       ? layoutInvalidated()
@@ -354,7 +403,7 @@ function layoutInvalidated(rowToUpdate) {
 
       var to = {
         autoAlpha : 1,
-        scale     : 1,
+        scale     : tile.isTemp ? .75 : 1,
         zIndex    : zIndex
       };
 
@@ -366,6 +415,15 @@ function layoutInvalidated(rowToUpdate) {
 
 
       timeline.fromTo(element, time, from, to, "reflow");
+    } else if (tile.width === (tile.colspan * colSize + ((tile.colspan - 1) * gutterStep) ) * .75){
+        var from = {
+            scale     : .75
+        };
+
+        var to = {
+            scale     : 1
+        };
+        timeline.fromTo(element, time, from, to, "reflow");
     }
 
     // Don't animate the tile that is being dragged and
@@ -398,83 +456,141 @@ function layoutInvalidated(rowToUpdate) {
 }
 
 // -------------------------------- functional stuff --------------------------
-// rule: outer div is 'tileContainer' + identifier
-//       inner div is 'tileInner' + identifier
-// used for removing tile at least.
 function selectTile (ex){
+    var html = '';
     //console.log('........ selectTile');
     // todo: use clientY for when we have menu on the side bar
     var clientX = ex.clientX > 100 ? ex.clientX - 100 : ex.clientX;
     currMouseOverX = clientX;
 
-    removeTemporaryTiles();
-    if(ex.currentTarget.id === 'addMemberSummary') {
-        createTile('tileContainerMemberSummary', '<div style="padding-left:0; padding-top:0;" id="tileInnerMemberSummary"><img src="img/member-summary-chart.png" style="opacity: .55"></div>', false, true);
-    } else if(ex.currentTarget.id === 'addMembershipsPie'){
-            createTile('tileContainerMembershipPie', '<div style="padding-left:0; padding-top:50px;height:100%" id="tileInnerMembershipPie"><img src="img/membership-half-pie.png" style="opacity: .55"></div>', false, true);
-    } else {
-        // auto create id's
-        var id = 'tileContainer' + label;
-        var inner = 'tileInner' + label;
-        createTile(id, '<div style="padding-left:20px; padding-top:20px;" id="' + inner +'">Hi</div>', false, true);
+    //removeTemporaryTiles();
+    if(ex.currentTarget.id === chartMap.memberSummaryNumbers.linkId /* 'addMemberSummary'*/) {
+        removeTemporaryTiles(chartMap.memberSummaryNumbers.container /*ignore 'tileContainerMemberSummary'*/);
+
+        // don't re-add it if its already added ....
+        if(_.indexOf(loadedCharts, chartMap.memberSummaryNumbers.container) >= 0){
+            //console.log(chartMap.memberSummaryNumbers.container + ' already loaded !!!');
+            return;
+        }
+        html = '<div style="padding-left:0; padding-top:0;" id="' + chartMap.memberSummaryNumbers.inner + '"><img src="img/member-summary-chart.png" style="opacity: .55"></div>'
+        createTile(chartMap.memberSummaryNumbers.container, html, false, true);
+        loadedCharts.push(chartMap.memberSummaryNumbers.container);
+    } else if(ex.currentTarget.id === chartMap.membershipPie.linkId /*'addMembershipsPie'*/){
+        removeTemporaryTiles(chartMap.membershipPie.container /* ignore 'tileContainerMembershipPie' */);
+        // don't re-add it if its already added ....
+        if(_.indexOf(loadedCharts, chartMap.membershipPie.container) >= 0){
+            //console.log(chartMap.memberSummaryNumbers.container + ' already loaded !!!');
+            return;
+        }
+        html = '<div style="padding-left:0; padding-top:50px;height:100%" id="' + chartMap.membershipPie.inner + '"><img src="img/membership-half-pie.png" style="opacity: .55"></div>'
+        createTile(chartMap.membershipPie.container, html, false, true);
+        loadedCharts.push(chartMap.membershipPie.container);
     }
-
 }
 
-var removalInProgress = false;
-function  detectIfReal() {
-    console.log('........ detectIfReal');
-    // if(!removalInProgress){
-    //     removalInProgress = true;
-    //     // give them time to press and use it ....
-    //     // setTimeout(function(){
-    //     //     removalInProgress = false;
-    //     //     removeTemporaryTiles();
-    //     // }, 2000);
-    //     console.log('........ detectIfReal');
-    //     // todo; how to determine if moved??
-    // } else {
-    //     console.log('........ removal in progress');
-    // }
-}
+// set timeout to remove mouseover popup after a few seconds if no action taken : mouse over something else, press, move this etc..
+function  removeIfNoAction(ex) {
+    var linkId = ex.currentTarget.id;
+    setTimeout(function(){
+        var id = '';
+        if(linkId === chartMap.memberSummaryNumbers.linkId /*'addMemberSummary'*/) {
+            id = chartMap.memberSummaryNumbers.container; // 'tileContainerMemberSummary';
+        } else if(linkId === chartMap.membershipPie.linkId /*'addMembershipsPie'*/){
+            id = chartMap.membershipPie.container; //'tileContainerMembershipPie';
+        }
+        var item = $('#' + id);
+        if(item && item[0] && item[0].tile && item[0].tile.isTemp){
+            //console.log('removeIfNoAction() - removing: ' + id);
+            // kill draggable
+            try{
+                Draggable.get('#' + id).kill();
+            }catch(e){}
+            item.remove();
+            var removeIdx = loadedCharts.indexOf(id);
+            if(removeIdx != -1) {
+                loadedCharts.splice(removeIdx, 1);
+            }
+            //toggleOptionButton(id, true);
+            layoutInvalidated();
+        }
 
+    }, 2000);
+}
 
 function removeTile(button){
     var tileContainer = button.parentElement;
     var id = tileContainer.id;
     // kill draggable
-    Draggable.get('#' + id).kill();
+    try{
+        Draggable.get('#' + id).kill();
+    }catch(e){}
+    var removeIdx = loadedCharts.indexOf(id);
+    if(removeIdx != -1) {
+        loadedCharts.splice(removeIdx, 1);
+    }
+    //toggleOptionButton(id, true);
     $(tileContainer).remove();
     layoutInvalidated();
 };
 
 // load the actual chart into our tile ... triggered after onRelease of dragging
 function loadTileContents(tileId){
-    var inner = tileId.replace('Container', 'Inner');
 
-    if(tileId === 'tileContainerMemberSummary'){
-        MembersChartNumbers.makeChart(inner);
-    } else if(tileId === 'tileContainerMembershipPie'){
-        $('#' + inner).html('<svg id="membershipPie"></svg><');
+    if(tileId === chartMap.memberSummaryNumbers.container /*'tileContainerMemberSummary'*/){
+        MembersChartNumbers.makeChart(chartMap.memberSummaryNumbers.inner);
+    } else if(tileId === chartMap.membershipPie.container /*'tileContainerMembershipPie'*/){
+        $('#' + chartMap.membershipPie.inner).html('<svg id="membershipPie"></svg><');
         MembershipsChart.makeChart();
     }
 };
 
-function removeTemporaryTiles() {
-    console.log('........ removeTemporaryTiles');
+// remove the ones added onHover (isTemp == true)
+function removeTemporaryTiles(ignoreId) {
+    //console.log('........ removeTemporaryTiles');
     var haveTemps = false;
     $(".tile").each(function(index, element) {
         var tile = this.tile;
-        // these are the ones added onHover
-        if(tile.isTemp){
+
+        if(element.id !== ignoreId && tile.isTemp){
+            //console.log('removeTemporaryFiles() - removing: ' + element.id);
             haveTemps = true;
             var id = element.id;
+
             // kill draggable
-            Draggable.get('#' + id).kill();
-            $(element).remove();
+            try{
+                Draggable.get('#' + id).kill();
+            }catch(e){}
+            try{
+                $(element).remove();
+            }catch(e){}
+            var removeIdx = loadedCharts.indexOf(id);
+            if(removeIdx != -1) {
+                loadedCharts.splice(removeIdx, 1);
+            }
+            //toggleOptionButton(id, true);
         }
     });
     if(haveTemps){
         layoutInvalidated();
     }
 };
+
+//
+// function toggleOptionButton(id, enable){
+//     console.log('.... would ' + (enable ? 'enable' : 'disable')  + ' option related to : ' + id);
+//     var linkId = '';
+//     if(id === 'tileContainerMemberSummary') {
+//         linkId = 'addMemberSummary';
+//     } else if(id === 'tileContainerMembershipPie'){
+//         linkId = 'addMembershipsPie';
+//     }
+//     // if(enable){
+//     //     console.log('..... ADDING mouse handlers to : ' + linkId);
+//     //     $('#' + linkId).on('mouseover', selectTile);
+//     //     $('#' + linkId).on('mouseout', removeIfNoAction);
+//     // }else{
+//     //     console.log('..... REMOVING mouse handlers to : ' + linkId);
+//     //     $('#' + linkId).off('mouseover', selectTile);
+//     //     $('#' + linkId).off('mouseout', removeIfNoAction);
+//     // }
+// };

@@ -1,0 +1,164 @@
+html {
+  font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+}
+
+body {
+  background: #3A3A4D;
+  padding: 25px;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+h1 {
+  color: #efefef;
+  font-weight: normal;
+  font-weight: 300;
+  margin-bottom: 30px;
+}
+h1 a {
+  color: #efefef;
+  border-bottom: 2px solid #efefef;
+  text-decoration: none;
+  padding-bottom: 3px;
+}
+h1 a:hover {
+  color: yellowgreen;
+  border-color: yellowgreen;
+}
+
+button {
+  padding: 12px 30px;
+  box-shadow: none;
+  border: none;
+  color: #efefef;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+button:hover {
+  background-color: rgba(0, 0, 0, 0.35);
+  color: yellowgreen;
+}
+button:focus {
+  outline: none;
+}
+
+#list {
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 250px;
+  width: 90%;
+  width: 0;
+  position: relative;
+  display: block;
+  margin-top: 50px;
+}
+
+.tile {
+  display: block;
+  position: absolute;
+  /*background-color: yellowgreen;*/
+  background-color:rgba(0, 0, 0, 0.5);
+  color: #3A3A4D;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.layout {
+  color: #efefef;
+  margin-bottom: 15px;
+}
+.layout label {
+  margin-right: 15px;
+  cursor: pointer;
+}
+.layout label:hover {
+  color: yellowgreen;
+}
+.layout input {
+  margin-right: 3px;
+}
+
+/*******************************/
+text {
+  font: 12px sans-serif;
+}
+svg {
+  display: block;
+}
+#divLineChart svg {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  width: 75%;
+}
+#divInnerClassMetricsChart svg {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  width: 75%;
+}
+#divInnerClassMetricsBarChart svg {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  width: 75%;
+}
+.dashed {
+  stroke-dasharray: 5,5;
+}
+
+#memberDoughnut,#membershipsDoughnut {
+  height: 350px !important;
+  width: 350px !important;
+}
+#membershipPie {
+  height: 350px !important;
+  width: 100%;
+}
+
+.nvd3.nv-pie.nv-chart-donut2 .nv-pie-title {
+  fill: rgba(70, 107, 168, 0.78);
+  stroke: rgba(70, 107, 168, 0.78);
+}
+.nvd3.nv-pie.nv-chart-donut1 .nv-pie-title {
+  opacity: 0.4;
+  fill: rgba(224, 116, 76, 0.91);
+  stroke: rgba(224, 116, 76, 0.91);
+}
+.nv-axis .tick line {
+  fill: #E8E8E8;
+  stroke: #E8E8E8;
+  stroke-width:1;
+  stroke-opacity: .3;
+}
+.nv-x .nv-axis .tick path {
+  fill: #FFF;
+  stroke: #FFF;
+  stroke-width:1;
+}
+.nvd3 text {
+  fill: #FFF;
+  stroke: #FFF;
+  stroke-width:1;
+  /*stroke-opacity: .75;*/
+  /*shape-rendering: crispEdges;*/
+}
+.nvd3 .nv-axis text {
+  fill: #FFF;
+  stroke: #FFF;
+  stroke-width:1;
+  /*stroke-opacity: .75;*/
+  /*shape-rendering: crispEdges;*/
+}
+.nvd3 .nv-legend text {
+  fill: #FFF;
+  stroke: #FFF;
+  stroke-width:1;
+  /*stroke-opacity: .75;*/
+  /*shape-rendering: crispEdges;*/
+}
+
+.memberSummaryLabel {
+  color: #FFFFFF;
+}

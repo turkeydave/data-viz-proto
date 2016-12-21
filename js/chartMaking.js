@@ -236,7 +236,7 @@ var MembersChartNumbers = {
             {key: "Cancelled", y: 7}
         ];
         var html = "<div style='position:relative'>";
-            html += "<div style='width:100%; position:absolute; top:0px; text-align:center; color: #FFF'>Members Summary</div>";
+            html += "<div class='memberSummaryLabel' style='width:100%; position:absolute; top:0px; text-align:center;'>Members Summary</div>";
             html += "<div style='width:50%; position:absolute; top:35px; left: 0px; text-align:center; color: #008000;'><div>PROSPECTS</div><div style='font-size:48pt;'>5</div></div>";
             html += "<div style='width:50%; position:absolute; top:35px; left: 50%; text-align:center; color: #5EC0E8;'><div>NEW</div><div style='font-size:48pt;'>22</div></div>";
             html += "<div style='width:50%; position:absolute; top:200px; left: 0px; text-align:center; color: #EA6060;'><div>AT RISK</div><div style='font-size:48pt;'>9</div></div>";
