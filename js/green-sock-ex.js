@@ -266,6 +266,7 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
       scale     : 0.95,
       zIndex    : "+=1000"
     });
+      return true;
   }
 
   function onDrag() {

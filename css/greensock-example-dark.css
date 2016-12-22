@@ -45,8 +45,8 @@ button:focus {
 }
 
 #list {
-  background-color: rgba(0, 0, 0, 0.2);
-  width: 250px;
+  /*background-color: rgba(0, 0, 0, 0.2);*/
+  /*width: 250px;*/
   width: 90%;
   width: 0;
   position: relative;

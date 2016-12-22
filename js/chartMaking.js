@@ -288,6 +288,7 @@ var MembershipsChart = {
 };
 
 var ClassMetricsLineChart = {
+    chart : null,
     makeChart : function(){
         var doChartWork = function(){
             //Line chart data should be sent as an array of series objects.
@@ -314,7 +315,6 @@ var ClassMetricsLineChart = {
                         .showYAxis(true)        //Show the y-axis
                         .showXAxis(true)        //Show the x-axis
                     ;
-
                 chart.xAxis     //Chart x-axis settings
                     .axisLabel('Months')
                     .tickValues([0,1,2,3,4,5,6,7,8,9,10,11,12])
@@ -334,10 +334,20 @@ var ClassMetricsLineChart = {
                     .datum(chartData)         //Populate the <svg> element with chart data...
                     .call(chart);          //Finally, render the chart!
 
+                // chart.lines.dispatch.on("elementClick", function(e) {
+                //     alert("You've clicked " + e.data.label);
+                // });
+
                 //Update the chart when window resizes.
                 //nv.utils.windowResize(function() { chart.update() });
                 return chart;
-            });
+            },
+                // call back from .addGraph
+                function(_chart){
+                    //console.log(_chart);
+                    ClassMetricsLineChart.chart = _chart;
+                }
+            );
         }; // doChartWork
 
         if(!helperCache.userMetricsLoaded){
@@ -356,7 +366,11 @@ var ClassMetricsLineChart = {
         } else {
             doChartWork();
         }
-
+        $(document).on("click", "#divInnerClassMetricsChart svg", function(e) {
+            $("#modalTest").modal('show');
+            console.log (e);
+            console.log (e.target.__data__);
+        });
     } // makeChart
 };
 
