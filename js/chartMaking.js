@@ -161,7 +161,7 @@ var SinChart = {
             /* Done setting the chart up? Time to render it!*/
             data = sinAndCos();   //You need data...
 
-            d3.select('#divLineChart svg')    //Select the <svg> element you want to render the chart in.
+            d3.select('#tileInnerSineWave svg')    //Select the <svg> element you want to render the chart in.
                 .datum(data)         //Populate the <svg> element with chart data...
                 .call(chart);          //Finally, render the chart!
 

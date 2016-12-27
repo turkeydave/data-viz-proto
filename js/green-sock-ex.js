@@ -36,13 +36,37 @@ var chartMap = {
         default : false,
         container : 'tileContainerSineWave',
         inner : 'tileInnerSineWave',
-        linkId : 'addSineWave'
+        linkId : 'addSineChart'
+    },
+    fake1 : {
+        default : false,
+        container : 'tileContainerFake1',
+        inner : 'tileInnerSineFake1',
+        linkId : 'fake1'
+    },
+    fake2 : {
+        default : false,
+        container : 'tileContainerFake2',
+        inner : 'tileInnerSineFake2',
+        linkId : 'fake2'
+    },
+    fake3 : {
+        default : false,
+        container : 'tileContainerFake3',
+        inner : 'tileInnerSineFake3',
+        linkId : 'fake3'
+    },
+    fake4 : {
+        default : false,
+        container : 'tileContainerFake4',
+        inner : 'tileInnerSineFake4',
+        linkId : 'fake4'
     }
 
 };
 
 var loadedCharts = [];
-
+var currentTheme = 'DARK';
 
 // GRID OPTIONS
 var rowSize   = 400;
@@ -52,16 +76,13 @@ var fixedSize = false; // When true, each tile's colspan will be fixed to 1
 var oneColumn = false; // When true, grid will only have 1 column and tiles have fixed colspan of 1
 var threshold = "50%"; // This is amount of overlap between tiles needed to detect a collision
 
-var $addMemberSummary  = $("#addMemberSummary");
-var $addMembershipsPie  = $("#addMembershipsPie");
-//$add.click(createTile);
-//$add.mousedown(selectTile);
-$addMemberSummary.on('mouseover', selectTile);
-$addMemberSummary.on('mouseout', removeIfNoAction);
-// $addMemberSummary.mouseover(selectTile);
-// $addMemberSummary.mouseout(removeIfNoAction);
-$addMembershipsPie.on('mouseover', selectTile);
-$addMembershipsPie.on('mouseout', removeIfNoAction);
+
+// hook up mouseover/outs on our icon links
+$('.chart-icon').each(function(idx, elem){
+    var $elem = $(elem);
+    $elem.on('mouseover', selectTile);
+    $elem.on('mouseout', removeIfNoAction);
+});
 
 var $list = $("#list");
 var $mode = $("input[name='layout']");
@@ -83,6 +104,7 @@ var shadow1 = "0 1px 3px  0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.6)";
 var shadow2 = "0 6px 10px 0 rgba(0, 0, 0, 0.3), 0 2px 2px 0 rgba(0, 0, 0, 0.2)";
 
 var currMouseOverX = 150;
+var currMouseOverY = 150;
 
 $(window).resize(resize);
 
@@ -91,10 +113,71 @@ $mode.change(init);
 
 init();
 
+// mostly poached from StylesheetService.js ....
+function toggleTheme(theme){
+    var dark = $("#toggleDarkTheme");
+    var light = $("#toggleLightTheme");
+    if(theme === 'DARK'){
+        dark.prop('disabled', true);
+        light.prop('disabled', false)
+    } else {
+        dark.prop('disabled', false);
+        light.prop('disabled', true)
+    }
+
+    if(theme !== currentTheme){
+        var _updateStylesheetInDom = function(oldSheet, newHref){
+            var newSheet = window.document.createElement("link");
+            newSheet.setAttribute("rel", "stylesheet");
+            newSheet.setAttribute("type", "text/css");
+            var cacheBust = '?tt' + new Date().getTime();
+            newSheet.setAttribute("href", newHref + cacheBust);
+            newSheet.setAttribute('title', 'dashboard-styles');
+            window.document.getElementsByTagName("head").item(0).replaceChild(newSheet, oldSheet);
+        };
+
+        var sheets = window.document.getElementsByTagName("link");
+        if(!sheets || sheets === undefined || sheets.length === 0){
+            return;
+        }
+        var oldSheet;
+        for(var x=0; x<sheets.length; x++){
+            if(sheets[x].title !== undefined && sheets[x].title === 'dashboard-styles'){
+                oldSheet = sheets[x];
+                break;
+            }
+        }
+
+        if(oldSheet === undefined){
+            return;
+        }
+
+        var currHref = oldSheet.href;
+
+        // already loaded ?
+        var targetStyle = currentTheme === 'DARK' ? 'greensock-example-light.css' : 'greensock-example-dark.css';
+
+        var actualCurrentStyle = currHref.substr(currHref.lastIndexOf('/') + 1);
+
+        // trim off the querystring
+        if(actualCurrentStyle.indexOf('?') > 0){
+            var parts = actualCurrentStyle.split('?');
+            actualCurrentStyle = parts[0];
+        }
+        _updateStylesheetInDom(oldSheet, currHref.replace(actualCurrentStyle, targetStyle));
+
+        // set current theme on the way out ....
+        currentTheme = (currentTheme === 'DARK') ? 'LIGHT' : 'DARK';
+    } // theme check
+}
+
+
 // ========================================================================
 //  INIT
 // ========================================================================
 function init() {
+
+  loadedCharts = [];
 
   var width = startWidth;
 
@@ -140,16 +223,12 @@ function init() {
       createTile('divContainerClassMetricsBar', '<div id="divInnerClassMetricsBarChart" style="width:100%;height:100%"><svg style="height:95%; width:95%"></svg></div>', true);
       loadedCharts.push(chartMap.classMetricsBar.container);
       label++;
-      //
-      // // createTile('div4', '<div>Four</div>', true);
-      // createTile('divLineChartContainer', '<div id="divLineChart" style="width:100%;height:100%"><svg style="height:95%; width:95%"></svg></div>', true);
-      //label++;
 
 
       setTimeout(function(){
           // ----divContainerClassMetricsChart
           // Class metrics coming from cube .... line chart
-          ClassMetricsLineChart.makeChart();
+          //ClassMetricsLineChart.makeChart();
 
           // Members doughnut chart
           MembersChart.makeChart();
@@ -158,22 +237,13 @@ function init() {
           // Class metrics coming from cube .... bar chart
           //    Note: only doing setTimeout here so I don't have to make another data call ....
           setTimeout(function(){
-              ClassMetricsBarChart.makeChart();
+              //ClassMetricsBarChart.makeChart();
           }, 1000);
-
-
-          //SinChart.makeChart();
-
-          //MembershipsChart.makeChart();
 
 
       }, 500);
 
       resize();
-
-    // for (var i = 0; i < numTiles; i++) {
-    //   createTile();
-    // }
   }
 }
 
@@ -404,17 +474,16 @@ function layoutInvalidated(rowToUpdate) {
 
       var to = {
         autoAlpha : 1,
-        scale     : tile.isTemp ? .75 : 1,
+        scale     : tile.isTemp ? .4 : 1,
         zIndex    : zIndex
       };
 
       // move temps to where the menu hover was ....
       if(tile.isTemp){
-        tile.x = currMouseOverX;
-        tile.y = -55; //-100; this works .... if covered no mouse out event fires... but couldn't hover on another item without closing this one ....
+          //console.log('current: x: ' + currMouseOverX + ', Y: ' + currMouseOverY);
+        tile.x = currMouseOverX - (tile.colspan === 2 ? 625 : 325);
+        tile.y = currMouseOverY - 300;
       }
-
-
       timeline.fromTo(element, time, from, to, "reflow");
     } else if (tile.width === (tile.colspan * colSize + ((tile.colspan - 1) * gutterStep) ) * .75){
         var from = {
@@ -461,8 +530,8 @@ function selectTile (ex){
     var html = '';
     //console.log('........ selectTile');
     // todo: use clientY for when we have menu on the side bar
-    var clientX = ex.clientX > 100 ? ex.clientX - 100 : ex.clientX;
-    currMouseOverX = clientX;
+    currMouseOverX = ex.clientX;
+    currMouseOverY = ex.clientY;
 
     //removeTemporaryTiles();
     if(ex.currentTarget.id === chartMap.memberSummaryNumbers.linkId /* 'addMemberSummary'*/) {
@@ -470,22 +539,60 @@ function selectTile (ex){
 
         // don't re-add it if its already added ....
         if(_.indexOf(loadedCharts, chartMap.memberSummaryNumbers.container) >= 0){
-            //console.log(chartMap.memberSummaryNumbers.container + ' already loaded !!!');
             return;
         }
-        html = '<div style="padding-left:0; padding-top:0;" id="' + chartMap.memberSummaryNumbers.inner + '"><img src="img/member-summary-chart.png" style="opacity: .55"></div>'
+        html = '<div style="padding-left:0; padding-top:0; text-align:center;" id="' + chartMap.memberSummaryNumbers.inner + '"><div class="chart-icon" style="font-size:18pt;">Member Summary</div><i class="fa fa-th-large" style="font-size:20em;"></i></div></div>';
         createTile(chartMap.memberSummaryNumbers.container, html, false, true);
         loadedCharts.push(chartMap.memberSummaryNumbers.container);
     } else if(ex.currentTarget.id === chartMap.membershipPie.linkId /*'addMembershipsPie'*/){
         removeTemporaryTiles(chartMap.membershipPie.container /* ignore 'tileContainerMembershipPie' */);
         // don't re-add it if its already added ....
         if(_.indexOf(loadedCharts, chartMap.membershipPie.container) >= 0){
-            //console.log(chartMap.memberSummaryNumbers.container + ' already loaded !!!');
             return;
         }
-        html = '<div style="padding-left:0; padding-top:50px;height:100%" id="' + chartMap.membershipPie.inner + '"><img src="img/membership-half-pie.png" style="opacity: .55"></div>'
+        html = '<div style="padding-left:0; padding-top:50px;height:100%;text-align:center;" id="' + chartMap.membershipPie.inner + '"><div class="chart-icon" style="margin-top:-50px;margin-bottom:10px;font-size:18pt;">Membership Summary</div><i class="fa fa-pie-chart" style="font-size:20em;"></i></div></div>';
         createTile(chartMap.membershipPie.container, html, false, true);
         loadedCharts.push(chartMap.membershipPie.container);
+    } else if(ex.currentTarget.id === chartMap.sineWaveLine.linkId /*'addSineChart'*/){
+        removeTemporaryTiles(chartMap.sineWaveLine.container);
+        if(_.indexOf(loadedCharts, chartMap.sineWaveLine.container) >= 0){
+            return;
+        }
+        html = '<div style="padding-left:0; padding-top:0; text-align:center; width:100%;height:90%" id="' + chartMap.sineWaveLine.inner + '"><div class="chart-icon" style="font-size:18pt;">Sine Wave</div><i class="fa fa-line-chart" style="font-size:20em;"></i></div></div>';
+        createTile(chartMap.sineWaveLine.container, html, true, true);
+        loadedCharts.push(chartMap.sineWaveLine.container);
+    } else if(ex.currentTarget.id === chartMap.fake1.linkId) {
+        removeTemporaryTiles(chartMap.fake1.container);
+        if (_.indexOf(loadedCharts, chartMap.fake1.container) >= 0) {
+            return;
+        }
+        html = '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.fake1.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Fake Chart 1</div><i class="fa fa-dashboard" style="font-size:20em;"></i></div></div>';
+        createTile(chartMap.fake1.container, html, false, true);
+        loadedCharts.push(chartMap.fake1.container);
+    } else if(ex.currentTarget.id === chartMap.fake2.linkId) {
+        removeTemporaryTiles(chartMap.fake2.container);
+        if (_.indexOf(loadedCharts, chartMap.fake2.container) >= 0) {
+            return;
+        }
+        html = '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.fake2.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Fake Chart 2</div><i class="fa fa-line-chart" style="font-size:20em;"></i></div></div>';
+        createTile(chartMap.fake2.container, html, false, true);
+        loadedCharts.push(chartMap.fake2.container);
+    } else if(ex.currentTarget.id === chartMap.fake3.linkId) {
+        removeTemporaryTiles(chartMap.fake3.container);
+        if (_.indexOf(loadedCharts, chartMap.fake3.container) >= 0) {
+            return;
+        }
+        html = '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.fake3.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Fake Chart 3</div><i class="fa fa-area-chart" style="font-size:20em;"></i></div></div>';
+        createTile(chartMap.fake3.container, html, false, true);
+        loadedCharts.push(chartMap.fake3.container);
+    } else if(ex.currentTarget.id === chartMap.fake4.linkId) {
+        removeTemporaryTiles(chartMap.fake4.container);
+        if (_.indexOf(loadedCharts, chartMap.fake4.container) >= 0) {
+            return;
+        }
+        html = '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.fake4.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Fake Chart 4</div><i class="fa fa-bar-chart" style="font-size:20em;"></i></div></div>';
+        createTile(chartMap.fake4.container, html, false, true);
+        loadedCharts.push(chartMap.fake4.container);
     }
 }
 
@@ -498,6 +605,16 @@ function  removeIfNoAction(ex) {
             id = chartMap.memberSummaryNumbers.container; // 'tileContainerMemberSummary';
         } else if(linkId === chartMap.membershipPie.linkId /*'addMembershipsPie'*/){
             id = chartMap.membershipPie.container; //'tileContainerMembershipPie';
+        } else if(linkId === chartMap.sineWaveLine.linkId){
+            id = chartMap.sineWaveLine.container;
+        } else if(linkId === chartMap.fake1.linkId){
+            id = chartMap.fake1.container;
+        } else if(linkId === chartMap.fake2.linkId){
+            id = chartMap.fake2.container;
+        } else if(linkId === chartMap.fake3.linkId){
+            id = chartMap.fake3.container;
+        } else if(linkId === chartMap.fake4.linkId){
+            id = chartMap.fake4.container;
         }
         var item = $('#' + id);
         if(item && item[0] && item[0].tile && item[0].tile.isTemp){
@@ -540,8 +657,11 @@ function loadTileContents(tileId){
     if(tileId === chartMap.memberSummaryNumbers.container /*'tileContainerMemberSummary'*/){
         MembersChartNumbers.makeChart(chartMap.memberSummaryNumbers.inner);
     } else if(tileId === chartMap.membershipPie.container /*'tileContainerMembershipPie'*/){
-        $('#' + chartMap.membershipPie.inner).html('<svg id="membershipPie"></svg><');
+        $('#' + chartMap.membershipPie.inner).html('<svg id="membershipPie"></svg>');
         MembershipsChart.makeChart();
+    }else if(tileId === chartMap.sineWaveLine.container){
+        $('#' + chartMap.sineWaveLine.inner).html('<svg style="height:95%; width:95%"></svg>');
+        SinChart.makeChart();
     }
 };
 
@@ -575,23 +695,3 @@ function removeTemporaryTiles(ignoreId) {
         layoutInvalidated();
     }
 };
-
-//
-// function toggleOptionButton(id, enable){
-//     console.log('.... would ' + (enable ? 'enable' : 'disable')  + ' option related to : ' + id);
-//     var linkId = '';
-//     if(id === 'tileContainerMemberSummary') {
-//         linkId = 'addMemberSummary';
-//     } else if(id === 'tileContainerMembershipPie'){
-//         linkId = 'addMembershipsPie';
-//     }
-//     // if(enable){
-//     //     console.log('..... ADDING mouse handlers to : ' + linkId);
-//     //     $('#' + linkId).on('mouseover', selectTile);
-//     //     $('#' + linkId).on('mouseout', removeIfNoAction);
-//     // }else{
-//     //     console.log('..... REMOVING mouse handlers to : ' + linkId);
-//     //     $('#' + linkId).off('mouseover', selectTile);
-//     //     $('#' + linkId).off('mouseout', removeIfNoAction);
-//     // }
-// };

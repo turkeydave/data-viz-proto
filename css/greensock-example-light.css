@@ -34,10 +34,10 @@ button {
   border: none;
   color: #ef800d;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(205, 205, 205, 0.88);
 }
 button:hover {
-  background-color: rgba(0, 0, 0, 0.35);
+  background-color: rgba(0, 0, 0, 0.47);
   color: yellowgreen;
 }
 button:focus {
@@ -46,13 +46,31 @@ button:focus {
 
 #list {
   /*background-color: rgba(0, 0, 0, 0.2);*/
-  background-color: #FFF;
-  width: 250px;
-  width: 90%;
+  /*background-color: #FFF;*/
+  /*width: 250px;*/
+  /*width: 90%;*/
   width: 0;
   position: relative;
   display: block;
   margin-top: 50px;
+}
+#right-bar {
+  margin-right: 5px;
+  text-align: right;
+  color:rgba(76, 76, 76, 0.72);
+  width: 100px;
+  position: absolute;
+  display: block;
+  top: 210px;
+  right: 0;
+  min-height: 75%;
+}
+div.chart-icon {
+  margin-top:10px;
+  color: rgba(76, 76, 76, 0.72);
+}
+div.chart-icon:hover {
+  color: yellowgreen;
 }
 
 .tile {
