@@ -168,7 +168,10 @@ var SinChart = {
             //Update the chart when window resizes.
             //nv.utils.windowResize(function() { chart.update() });
             return chart;
-        });
+        },  // call back from .addGraph
+            function(_chart){
+                SinChart.chart = _chart;
+            });
 
     }
 };
@@ -221,7 +224,10 @@ var MembersChart = {
             // OTHER EVENTS DISPATCHED BY THE PIE INCLUDE: elementMouseover, elementMouseout, elementMousemove
             // @see nv.models.pie
             return chart1;
-        });
+        },  // call back from .addGraph
+            function(_chart){
+                MembersChart.chart = _chart;
+            });
 
     }
 };
@@ -248,6 +254,7 @@ var MembersChartNumbers = {
 };
 
 var MembershipsChart = {
+    chart : null,
     makeChart : function(){
 
         var testdata = [
@@ -282,7 +289,10 @@ var MembershipsChart = {
                 .transition().duration(1200)
                 .call(chart2);
             return chart2;
-        });
+        }, // call back from .addGraph
+            function(_chart){
+                MembershipsChart.chart = _chart;
+            });
 
     }
 };
@@ -341,10 +351,8 @@ var ClassMetricsLineChart = {
                 //Update the chart when window resizes.
                 //nv.utils.windowResize(function() { chart.update() });
                 return chart;
-            },
-                // call back from .addGraph
+            },  // call back from .addGraph
                 function(_chart){
-                    //console.log(_chart);
                     ClassMetricsLineChart.chart = _chart;
                 }
             );
@@ -367,14 +375,35 @@ var ClassMetricsLineChart = {
             doChartWork();
         }
         $(document).on("click", "#divInnerClassMetricsChart svg", function(e) {
-            $("#modalTest").modal('show');
-            console.log (e);
-            console.log (e.target.__data__);
+
+            // for toggling other graph
+            var __data__ = e.target.__data__;
+
+            // dispatch to the other chart to enable / disable that series
+            if(__data__ && __data__.seriesIndex !== undefined) { // they clicked on legend
+                if(__data__.seriesIndex === 0) {
+                    ClassMetricsBarChart.chart.dispatch.changeState({disabled: { 0: __data__.disabled}});
+                    ClassMetricsBarChart.attendanceCountDisabled = __data__.disabled;
+                } else {
+                    ClassMetricsBarChart.chart.dispatch.changeState({disabled: { 1: __data__.disabled}});
+                    ClassMetricsBarChart.reservationCountDisabled = __data__.disabled;
+                }
+
+
+            } else { // not clicked on legend
+                $("#modalTest").modal('show');
+                console.log (e);
+                console.log (e.target.__data__);
+            }
+            //ClassMetricsBarChart.chart.dispatch.changeState({disabled: {0: true}});
         });
     } // makeChart
 };
 
 var ClassMetricsBarChart = {
+    chart : null,
+    attendanceCountDisabled : false, // have these because __data__ is weird for this one, but LineChart needs array of both disabled series object
+    reservationCountDisabled : false,
     makeChart : function(){
 
         var doChartWork = function(){
@@ -425,7 +454,12 @@ var ClassMetricsBarChart = {
                 //Update the chart when window resizes.
                 //nv.utils.windowResize(function() { chart.update() });
                 return chart;
-            });
+            },
+                // call back from .addGraph
+                function(_chart){
+                    ClassMetricsBarChart.chart = _chart;
+                }
+            );
         }; // doChartWork
 
         if(!helperCache.userMetricsLoaded){
@@ -444,6 +478,27 @@ var ClassMetricsBarChart = {
         } else {
             doChartWork();
         }
+
+        $(document).on("click", "#divInnerClassMetricsBarChart svg", function(e) {
+
+            // for toggling other graph
+            var __data__ = e.target.__data__;
+
+            // dispatch to the other chart to enable / disable that series
+            // NOTE: bar chart didn't have seriesIndex in __data__, so using "key"
+            if(__data__ && __data__.key !== undefined) { // they clicked on legend
+                if (__data__.key === 'Attendance Count') {
+                    ClassMetricsBarChart.attendanceCountDisabled = __data__.disabled;
+                    //ClassMetricsLineChart.chart.dispatch.changeState({disabled: {0: __data__.disabled, 1: ClassMetricsBarChart.reservationCountEnabled}});
+                    ClassMetricsLineChart.chart.dispatch.changeState({disabled: [__data__.disabled, ClassMetricsBarChart.reservationCountDisabled] });
+                } else { // key === 'Reservation Count'
+                    ClassMetricsBarChart.reservationCountDisabled = __data__.disabled;
+                    ClassMetricsLineChart.chart.dispatch.changeState({disabled: [ClassMetricsBarChart.attendanceCountDisabled, __data__.disabled] });
+                    //ClassMetricsLineChart.chart.dispatch.changeState({disabled: {0: ClassMetricsBarChart.attendanceCountEnabled, 1: __data__.disabled}});
+                }
+
+            }
+        });
 
     } // makeChart
 };

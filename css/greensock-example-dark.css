@@ -60,7 +60,7 @@ button:focus {
   width: 100px;
   position: absolute;
   display: block;
-  top: 210px;
+  top: 110px;
   right: 0;
   min-height: 75%;
 }

@@ -1,70 +1,5 @@
 //Grid Greensock code created by Blake Bowen
 //Forked from: http://codepen.io/osublake/pen/RNLdpz/
-
-var chartMap = {
-    classMetricsLine : {
-        default : true,
-        container : 'divContainerClassMetricsChart',
-        inner : 'divInnerClassMetricsChart',
-        linkId : null
-    },
-    classMetricsBar : {
-        default : true,
-        container : 'divContainerClassMetricsBar',
-        inner : 'divInnerClassMetricsBarChart',
-        linkId : null
-    },
-    memberDoughnut : {
-        default : true,
-        container : 'divContainerMemberDoughnutChart',
-        inner : 'divInnerMemberDoughnutChart',
-        linkId : null
-    },
-    memberSummaryNumbers : {
-        default : false,
-        container : 'tileContainerMemberSummary',
-        inner : 'tileInnerMemberSummary',
-        linkId : 'addMemberSummary'
-    },
-    membershipPie : {
-        default : false,
-        container : 'tileContainerMembershipPie',
-        inner : 'tileInnerMembershipPie',
-        linkId : 'addMembershipsPie'
-    },
-    sineWaveLine : {
-        default : false,
-        container : 'tileContainerSineWave',
-        inner : 'tileInnerSineWave',
-        linkId : 'addSineChart'
-    },
-    fake1 : {
-        default : false,
-        container : 'tileContainerFake1',
-        inner : 'tileInnerSineFake1',
-        linkId : 'fake1'
-    },
-    fake2 : {
-        default : false,
-        container : 'tileContainerFake2',
-        inner : 'tileInnerSineFake2',
-        linkId : 'fake2'
-    },
-    fake3 : {
-        default : false,
-        container : 'tileContainerFake3',
-        inner : 'tileInnerSineFake3',
-        linkId : 'fake3'
-    },
-    fake4 : {
-        default : false,
-        container : 'tileContainerFake4',
-        inner : 'tileInnerSineFake4',
-        linkId : 'fake4'
-    }
-
-};
-
 var loadedCharts = [];
 var currentTheme = 'DARK';
 
@@ -89,7 +24,6 @@ var $mode = $("input[name='layout']");
 
 // Live node list of tiles
 var tiles  = $list[0].getElementsByClassName("tile");
-var label  = 1;
 var zIndex = 1000;
 
 var startWidth  = "100%";
@@ -211,24 +145,19 @@ function init() {
   TweenLite.delayedCall(0.25, populateBoard);
 
   function populateBoard() {
-
-      createTile('divContainerClassMetricsChart', '<div id="divInnerClassMetricsChart" style="width:100%;height:90%"><svg style="height:95%; width:95%"></svg></div>', true);
+      createTile(chartMap.classMetricsLine.container, chartMap.classMetricsLine.html(), true);
       loadedCharts.push(chartMap.classMetricsLine.container);
-      label++;
 
-      createTile('divContainerMemberDoughnutChart', '<div id="divInnerMemberDoughnutChart" style="padding-left:20px; padding-top:20px"><svg id="memberDoughnut" class="mypiechart"></svg></div>', false);
+      createTile(chartMap.memberDoughnut.container, chartMap.memberDoughnut.html(), false);
       loadedCharts.push(chartMap.memberDoughnut.container);
-      label++;
 
-      createTile('divContainerClassMetricsBar', '<div id="divInnerClassMetricsBarChart" style="width:100%;height:100%"><svg style="height:95%; width:95%"></svg></div>', true);
+      createTile(chartMap.classMetricsBar.container, chartMap.classMetricsBar.html(), true);
       loadedCharts.push(chartMap.classMetricsBar.container);
-      label++;
 
 
       setTimeout(function(){
-          // ----divContainerClassMetricsChart
           // Class metrics coming from cube .... line chart
-          //ClassMetricsLineChart.makeChart();
+          ClassMetricsLineChart.makeChart();
 
           // Members doughnut chart
           MembersChart.makeChart();
@@ -237,7 +166,7 @@ function init() {
           // Class metrics coming from cube .... bar chart
           //    Note: only doing setTimeout here so I don't have to make another data call ....
           setTimeout(function(){
-              //ClassMetricsBarChart.makeChart();
+              ClassMetricsBarChart.makeChart();
           }, 1000);
 
 
@@ -285,7 +214,6 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
     var element = $('<div></div>').addClass("tile").attr("id", id)
         .append('<button style="position:absolute;bottom:0;right:0" onClick="removeTile(this)">remove</button>').append(innerHtml);
 
-  label++;
   var lastX   = 0;
 
   Draggable.create(element, {
@@ -482,7 +410,7 @@ function layoutInvalidated(rowToUpdate) {
       if(tile.isTemp){
           //console.log('current: x: ' + currMouseOverX + ', Y: ' + currMouseOverY);
         tile.x = currMouseOverX - (tile.colspan === 2 ? 625 : 325);
-        tile.y = currMouseOverY - 300;
+        tile.y = currMouseOverY - 450;
       }
       timeline.fromTo(element, time, from, to, "reflow");
     } else if (tile.width === (tile.colspan * colSize + ((tile.colspan - 1) * gutterStep) ) * .75){
@@ -527,72 +455,95 @@ function layoutInvalidated(rowToUpdate) {
 
 // -------------------------------- functional stuff --------------------------
 function selectTile (ex){
-    var html = '';
-    //console.log('........ selectTile');
     // todo: use clientY for when we have menu on the side bar
-    currMouseOverX = ex.clientX;
-    currMouseOverY = ex.clientY;
+    currMouseOverX = ex.screenX; //- ex.offsetX; // ex.clientX;
+    currMouseOverY = ex.screenY; // - ex.offsetY; // ex.clientY;
 
-    //removeTemporaryTiles();
-    if(ex.currentTarget.id === chartMap.memberSummaryNumbers.linkId /* 'addMemberSummary'*/) {
+    if(ex.currentTarget.id === chartMap.classMetricsLine.linkId ) {
+        removeTemporaryTiles(chartMap.classMetricsLine.container );
+        // don't re-add it if its already added ....
+        if(_.indexOf(loadedCharts, chartMap.classMetricsLine.container) >= 0){
+            return;
+        }
+        createTile(chartMap.classMetricsLine.container, chartMap.classMetricsLine.placeHolderHtml(), true, true);
+        loadedCharts.push(chartMap.classMetricsLine.container);
+
+    } else if(ex.currentTarget.id === chartMap.classMetricsBar.linkId) {
+        removeTemporaryTiles(chartMap.classMetricsBar.container);
+        // don't re-add it if its already added ....
+        if (_.indexOf(loadedCharts, chartMap.classMetricsBar.container) >= 0) {
+            return;
+        }
+        createTile(chartMap.classMetricsBar.container, chartMap.classMetricsBar.placeHolderHtml(), true, true);
+        loadedCharts.push(chartMap.classMetricsBar.container);
+
+    } else if(ex.currentTarget.id === chartMap.memberDoughnut.linkId) {
+            removeTemporaryTiles(chartMap.memberDoughnut.container);
+            // don't re-add it if its already added ....
+            if(_.indexOf(loadedCharts, chartMap.memberDoughnut.container) >= 0){
+                return;
+            }
+            createTile(chartMap.memberDoughnut.container, chartMap.memberDoughnut.placeHolderHtml(), false, true);
+            loadedCharts.push(chartMap.memberDoughnut.container);
+
+    } else if(ex.currentTarget.id === chartMap.memberSummaryNumbers.linkId /* 'addMemberSummary'*/) {
         removeTemporaryTiles(chartMap.memberSummaryNumbers.container /*ignore 'tileContainerMemberSummary'*/);
-
         // don't re-add it if its already added ....
         if(_.indexOf(loadedCharts, chartMap.memberSummaryNumbers.container) >= 0){
             return;
         }
-        html = '<div style="padding-left:0; padding-top:0; text-align:center;" id="' + chartMap.memberSummaryNumbers.inner + '"><div class="chart-icon" style="font-size:18pt;">Member Summary</div><i class="fa fa-th-large" style="font-size:20em;"></i></div></div>';
-        createTile(chartMap.memberSummaryNumbers.container, html, false, true);
+        createTile(chartMap.memberSummaryNumbers.container, chartMap.memberSummaryNumbers.placeHolderHtml(), false, true);
         loadedCharts.push(chartMap.memberSummaryNumbers.container);
+
     } else if(ex.currentTarget.id === chartMap.membershipPie.linkId /*'addMembershipsPie'*/){
         removeTemporaryTiles(chartMap.membershipPie.container /* ignore 'tileContainerMembershipPie' */);
         // don't re-add it if its already added ....
         if(_.indexOf(loadedCharts, chartMap.membershipPie.container) >= 0){
             return;
         }
-        html = '<div style="padding-left:0; padding-top:50px;height:100%;text-align:center;" id="' + chartMap.membershipPie.inner + '"><div class="chart-icon" style="margin-top:-50px;margin-bottom:10px;font-size:18pt;">Membership Summary</div><i class="fa fa-pie-chart" style="font-size:20em;"></i></div></div>';
-        createTile(chartMap.membershipPie.container, html, false, true);
+        createTile(chartMap.membershipPie.container, chartMap.membershipPie.placeHolderHtml(), false, true);
         loadedCharts.push(chartMap.membershipPie.container);
+
     } else if(ex.currentTarget.id === chartMap.sineWaveLine.linkId /*'addSineChart'*/){
         removeTemporaryTiles(chartMap.sineWaveLine.container);
         if(_.indexOf(loadedCharts, chartMap.sineWaveLine.container) >= 0){
             return;
         }
-        html = '<div style="padding-left:0; padding-top:0; text-align:center; width:100%;height:90%" id="' + chartMap.sineWaveLine.inner + '"><div class="chart-icon" style="font-size:18pt;">Sine Wave</div><i class="fa fa-line-chart" style="font-size:20em;"></i></div></div>';
-        createTile(chartMap.sineWaveLine.container, html, true, true);
+        createTile(chartMap.sineWaveLine.container, chartMap.sineWaveLine.placeHolderHtml(), true, true);
         loadedCharts.push(chartMap.sineWaveLine.container);
+
     } else if(ex.currentTarget.id === chartMap.fake1.linkId) {
         removeTemporaryTiles(chartMap.fake1.container);
         if (_.indexOf(loadedCharts, chartMap.fake1.container) >= 0) {
             return;
         }
-        html = '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.fake1.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Fake Chart 1</div><i class="fa fa-dashboard" style="font-size:20em;"></i></div></div>';
-        createTile(chartMap.fake1.container, html, false, true);
+        createTile(chartMap.fake1.container, chartMap.fake1.placeHolderHtml(), false, true);
         loadedCharts.push(chartMap.fake1.container);
+
     } else if(ex.currentTarget.id === chartMap.fake2.linkId) {
         removeTemporaryTiles(chartMap.fake2.container);
         if (_.indexOf(loadedCharts, chartMap.fake2.container) >= 0) {
             return;
         }
-        html = '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.fake2.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Fake Chart 2</div><i class="fa fa-line-chart" style="font-size:20em;"></i></div></div>';
-        createTile(chartMap.fake2.container, html, false, true);
+        createTile(chartMap.fake2.container, chartMap.fake2.placeHolderHtml(), false, true);
         loadedCharts.push(chartMap.fake2.container);
+
     } else if(ex.currentTarget.id === chartMap.fake3.linkId) {
         removeTemporaryTiles(chartMap.fake3.container);
         if (_.indexOf(loadedCharts, chartMap.fake3.container) >= 0) {
             return;
         }
-        html = '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.fake3.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Fake Chart 3</div><i class="fa fa-area-chart" style="font-size:20em;"></i></div></div>';
-        createTile(chartMap.fake3.container, html, false, true);
+        createTile(chartMap.fake3.container, chartMap.fake3.placeHolderHtml(), false, true);
         loadedCharts.push(chartMap.fake3.container);
+
     } else if(ex.currentTarget.id === chartMap.fake4.linkId) {
         removeTemporaryTiles(chartMap.fake4.container);
         if (_.indexOf(loadedCharts, chartMap.fake4.container) >= 0) {
             return;
         }
-        html = '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.fake4.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Fake Chart 4</div><i class="fa fa-bar-chart" style="font-size:20em;"></i></div></div>';
-        createTile(chartMap.fake4.container, html, false, true);
+        createTile(chartMap.fake4.container, chartMap.fake4.placeHolderHtml(), false, true);
         loadedCharts.push(chartMap.fake4.container);
+
     }
 }
 
@@ -601,7 +552,13 @@ function  removeIfNoAction(ex) {
     var linkId = ex.currentTarget.id;
     setTimeout(function(){
         var id = '';
-        if(linkId === chartMap.memberSummaryNumbers.linkId /*'addMemberSummary'*/) {
+        if(linkId === chartMap.classMetricsLine.linkId) {
+            id = chartMap.classMetricsLine.container;
+        } else if(linkId === chartMap.classMetricsBar.linkId ) {
+                id = chartMap.classMetricsBar.container;
+        } else if(linkId === chartMap.memberDoughnut.linkId ) {
+            id = chartMap.memberDoughnut.container;
+        } else if(linkId === chartMap.memberSummaryNumbers.linkId /*'addMemberSummary'*/) {
             id = chartMap.memberSummaryNumbers.container; // 'tileContainerMemberSummary';
         } else if(linkId === chartMap.membershipPie.linkId /*'addMembershipsPie'*/){
             id = chartMap.membershipPie.container; //'tileContainerMembershipPie';
@@ -653,14 +610,26 @@ function removeTile(button){
 
 // load the actual chart into our tile ... triggered after onRelease of dragging
 function loadTileContents(tileId){
-
-    if(tileId === chartMap.memberSummaryNumbers.container /*'tileContainerMemberSummary'*/){
+    if(tileId === chartMap.classMetricsLine.container){
+        $('#' + chartMap.classMetricsLine.inner).replaceWith(chartMap.classMetricsLine.html());
+        ClassMetricsLineChart.makeChart();
+    } else if (tileId === chartMap.classMetricsBar.container){
+        $('#' + chartMap.classMetricsBar.inner).replaceWith(chartMap.classMetricsBar.html());
+        ClassMetricsBarChart.attendanceCountDisabled = false;
+        ClassMetricsBarChart.reservationCountDisabled = false;
+        ClassMetricsBarChart.makeChart();
+    } else if (tileId === chartMap.memberDoughnut.container){
+        $('#' + chartMap.memberDoughnut.inner).replaceWith(chartMap.memberDoughnut.html());
+        // Members doughnut chart
+        MembersChart.makeChart();
+    } else if (tileId === chartMap.memberSummaryNumbers.container){
+        // special, different ... just adds html to dom node ...
         MembersChartNumbers.makeChart(chartMap.memberSummaryNumbers.inner);
-    } else if(tileId === chartMap.membershipPie.container /*'tileContainerMembershipPie'*/){
-        $('#' + chartMap.membershipPie.inner).html('<svg id="membershipPie"></svg>');
+    } else if(tileId === chartMap.membershipPie.container){
+        $('#' + chartMap.membershipPie.inner).replaceWith(chartMap.membershipPie.html());
         MembershipsChart.makeChart();
     }else if(tileId === chartMap.sineWaveLine.container){
-        $('#' + chartMap.sineWaveLine.inner).html('<svg style="height:95%; width:95%"></svg>');
+        $('#' + chartMap.sineWaveLine.inner).replaceWith(chartMap.sineWaveLine.html());
         SinChart.makeChart();
     }
 };
