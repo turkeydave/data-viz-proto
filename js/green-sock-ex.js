@@ -156,17 +156,31 @@ function init() {
 
 
       setTimeout(function(){
+          var item = null;
+
           // Class metrics coming from cube .... line chart
           ClassMetricsLineChart.makeChart();
+          item = $('#' + chartMap.classMetricsLine.container);
+          if(item && item[0] && item[0].tile){
+              item[0].tile.isLoaded = true;
+          }
 
           // Members doughnut chart
           MembersChart.makeChart();
+          item = $('#' + chartMap.memberDoughnut.container);
+          if(item && item[0] && item[0].tile){
+              item[0].tile.isLoaded = true;
+          }
 
           // ------- divContainerClassMetricsBar
           // Class metrics coming from cube .... bar chart
           //    Note: only doing setTimeout here so I don't have to make another data call ....
           setTimeout(function(){
               ClassMetricsBarChart.makeChart();
+              item = $('#' + chartMap.classMetricsBar.container);
+              if(item && item[0] && item[0].tile){
+                  item[0].tile.isLoaded = true;
+              }
           }, 1000);
 
 
@@ -612,6 +626,8 @@ function removeTile(button){
 function loadTileContents(tileId){
     if(tileId === chartMap.classMetricsLine.container){
         $('#' + chartMap.classMetricsLine.inner).replaceWith(chartMap.classMetricsLine.html());
+        ClassMetricsLineChart.attendanceCountDisabled = false;
+        ClassMetricsLineChart.reservationCountDisabled = false;
         ClassMetricsLineChart.makeChart();
     } else if (tileId === chartMap.classMetricsBar.container){
         $('#' + chartMap.classMetricsBar.inner).replaceWith(chartMap.classMetricsBar.html());

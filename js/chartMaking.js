@@ -298,6 +298,8 @@ var MembershipsChart = {
 };
 
 var ClassMetricsLineChart = {
+    attendanceCountDisabled : false, // have these because __data__ is weird for this one, but LineChart needs array of both disabled series object
+    reservationCountDisabled : false,
     chart : null,
     makeChart : function(){
         var doChartWork = function(){
@@ -379,16 +381,14 @@ var ClassMetricsLineChart = {
             // for toggling other graph
             var __data__ = e.target.__data__;
 
-            // dispatch to the other chart to enable / disable that series
-            if(__data__ && __data__.seriesIndex !== undefined) { // they clicked on legend
-                if(__data__.seriesIndex === 0) {
-                    ClassMetricsBarChart.chart.dispatch.changeState({disabled: { 0: __data__.disabled}});
-                    ClassMetricsBarChart.attendanceCountDisabled = __data__.disabled;
-                } else {
-                    ClassMetricsBarChart.chart.dispatch.changeState({disabled: { 1: __data__.disabled}});
-                    ClassMetricsBarChart.reservationCountDisabled = __data__.disabled;
+            if(__data__ && __data__.key !== undefined) { // they clicked on legend
+                if (__data__.key === 'Attendance Count') {
+                    ClassMetricsLineChart.attendanceCountDisabled = __data__.disabled;
+                    ClassMetricsBarChart.chart.dispatch.changeState({disabled: [__data__.disabled, ClassMetricsLineChart.reservationCountDisabled] });
+                } else { // key === 'Reservation Count'
+                    ClassMetricsLineChart.reservationCountDisabled = __data__.disabled;
+                    ClassMetricsBarChart.chart.dispatch.changeState({disabled: [ClassMetricsLineChart.attendanceCountDisabled, __data__.disabled] });
                 }
-
 
             } else { // not clicked on legend
                 $("#modalTest").modal('show');
@@ -489,12 +489,10 @@ var ClassMetricsBarChart = {
             if(__data__ && __data__.key !== undefined) { // they clicked on legend
                 if (__data__.key === 'Attendance Count') {
                     ClassMetricsBarChart.attendanceCountDisabled = __data__.disabled;
-                    //ClassMetricsLineChart.chart.dispatch.changeState({disabled: {0: __data__.disabled, 1: ClassMetricsBarChart.reservationCountEnabled}});
                     ClassMetricsLineChart.chart.dispatch.changeState({disabled: [__data__.disabled, ClassMetricsBarChart.reservationCountDisabled] });
                 } else { // key === 'Reservation Count'
                     ClassMetricsBarChart.reservationCountDisabled = __data__.disabled;
                     ClassMetricsLineChart.chart.dispatch.changeState({disabled: [ClassMetricsBarChart.attendanceCountDisabled, __data__.disabled] });
-                    //ClassMetricsLineChart.chart.dispatch.changeState({disabled: {0: ClassMetricsBarChart.attendanceCountEnabled, 1: __data__.disabled}});
                 }
 
             }
