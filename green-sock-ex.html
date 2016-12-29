@@ -10,9 +10,6 @@
       <link href="js/lib/bootstrap-custom/css/bootstrap.modal.css" rel="stylesheet" type="text/css">
       <link rel="stylesheet" type="text/css" href="js/lib/font-awesome-4.7.0/css/font-awesome.min.css">
     </meta>
-    <style>
-
-    </style>
   </head>
   <body>
       <div class="layout" style="position:absolute; top:0; right:0; margin-top: 10px; margin-right:10px;">
@@ -24,17 +21,11 @@
             <button id="toggleLightTheme" onclick="toggleTheme('LIGHT');">Light</button>
           </label>
       </div>
-      <h1>Zen Planner Dashboard</h1>
+      <h1 id="theHeader" style="display:none">Zen Planner Dashboard</h1>
         <div class="layout">
           <label><input id="mixed" name="layout" type="radio" value="mixed" checked=""/> Mixed Tile Size</label>
           <label><input id="fixed" name="layout" type="radio" value="fixed"/> Fixed Tile Size</label>
-          <label><input id="column" name="layout" type="radio" value="column"/> Single Column</label>
-          <!--<label>-->
-              <!--<button id="addMemberSummary">Add Member Summary Chart</button>-->
-          <!--</label>-->
-          <!--<label>-->
-              <!--<button style="margin-left:50px;" id="addMembershipsPie">Add Memberships Pie</button>-->
-          <!--</label>-->
+          <!--<label><input id="column" name="layout" type="radio" value="column"/> Single Column</label>-->
         </div>
 
         <div id="modalTest" class="modal fade" tabindex="-1" role="dialog" style="display:none;">

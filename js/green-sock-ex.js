@@ -44,6 +44,12 @@ $(window).resize(resize);
 
 $mode.change(init);
 
+var isTablet = false;
+var listWidth = 800;
+var xOffset = 0;
+var jankOffsetX1 = 325; // sqaure panel
+var jankOffsetX2 = 625; // 2 wide panel
+var jankOffsetY = 450;
 
 init();
 
@@ -110,6 +116,17 @@ function toggleTheme(theme){
 //  INIT
 // ========================================================================
 function init() {
+
+    listWidth = $("#list").width();
+
+    // only show header if loaded stand alone
+    if(window.location.href.toLowerCase().indexOf('hosted=true') < 0){
+        $('#theHeader').show();
+    }
+    if(window.location.href.toLowerCase().indexOf('istablet=true') > 0){
+        isTablet = true;
+    }
+
 
   loadedCharts = [];
 
@@ -422,9 +439,17 @@ function layoutInvalidated(rowToUpdate) {
 
       // move temps to where the menu hover was ....
       if(tile.isTemp){
+          var xHack = 0, yHack = 0;
+          if(isTablet){
+              xHack = $('#list').width() - (tile.colspan === 2 ? 620 : 320);
+              yHack = xOffset - 210;
+          } else {
+              xHack = currMouseOverX - (tile.colspan === 2 ? jankOffsetX2 : jankOffsetX1);
+              yHack = currMouseOverY - jankOffsetY;
+          }
           //console.log('current: x: ' + currMouseOverX + ', Y: ' + currMouseOverY);
-        tile.x = currMouseOverX - (tile.colspan === 2 ? 625 : 325);
-        tile.y = currMouseOverY - 450;
+        tile.x = xHack;//listWidth; // currMouseOverX - (tile.colspan === 2 ? jankOffsetX2 : jankOffsetX1);
+        tile.y = yHack; //xOffset; //currMouseOverY - jankOffsetY;
       }
       timeline.fromTo(element, time, from, to, "reflow");
     } else if (tile.width === (tile.colspan * colSize + ((tile.colspan - 1) * gutterStep) ) * .75){
@@ -470,6 +495,7 @@ function layoutInvalidated(rowToUpdate) {
 // -------------------------------- functional stuff --------------------------
 function selectTile (ex){
     // todo: use clientY for when we have menu on the side bar
+    xOffset = ex.target.offsetTop;
     currMouseOverX = ex.screenX; //- ex.offsetX; // ex.clientX;
     currMouseOverY = ex.screenY; // - ex.offsetY; // ex.clientY;
 
