@@ -1,3 +1,7 @@
+
+var warehouseDataServer = 'http://192.168.49.130:5102';
+
+
 //Grid Greensock code created by Blake Bowen
 //Forked from: http://codepen.io/osublake/pen/RNLdpz/
 var loadedCharts = [];
@@ -52,64 +56,6 @@ var jankOffsetX2 = 625; // 2 wide panel
 var jankOffsetY = 450;
 
 init();
-
-// mostly poached from StylesheetService.js ....
-function toggleTheme(theme){
-    var dark = $("#toggleDarkTheme");
-    var light = $("#toggleLightTheme");
-    if(theme === 'DARK'){
-        dark.prop('disabled', true);
-        light.prop('disabled', false)
-    } else {
-        dark.prop('disabled', false);
-        light.prop('disabled', true)
-    }
-
-    if(theme !== currentTheme){
-        var _updateStylesheetInDom = function(oldSheet, newHref){
-            var newSheet = window.document.createElement("link");
-            newSheet.setAttribute("rel", "stylesheet");
-            newSheet.setAttribute("type", "text/css");
-            var cacheBust = '?tt' + new Date().getTime();
-            newSheet.setAttribute("href", newHref + cacheBust);
-            newSheet.setAttribute('title', 'dashboard-styles');
-            window.document.getElementsByTagName("head").item(0).replaceChild(newSheet, oldSheet);
-        };
-
-        var sheets = window.document.getElementsByTagName("link");
-        if(!sheets || sheets === undefined || sheets.length === 0){
-            return;
-        }
-        var oldSheet;
-        for(var x=0; x<sheets.length; x++){
-            if(sheets[x].title !== undefined && sheets[x].title === 'dashboard-styles'){
-                oldSheet = sheets[x];
-                break;
-            }
-        }
-
-        if(oldSheet === undefined){
-            return;
-        }
-
-        var currHref = oldSheet.href;
-
-        // already loaded ?
-        var targetStyle = currentTheme === 'DARK' ? 'greensock-example-light.css' : 'greensock-example-dark.css';
-
-        var actualCurrentStyle = currHref.substr(currHref.lastIndexOf('/') + 1);
-
-        // trim off the querystring
-        if(actualCurrentStyle.indexOf('?') > 0){
-            var parts = actualCurrentStyle.split('?');
-            actualCurrentStyle = parts[0];
-        }
-        _updateStylesheetInDom(oldSheet, currHref.replace(actualCurrentStyle, targetStyle));
-
-        // set current theme on the way out ....
-        currentTheme = (currentTheme === 'DARK') ? 'LIGHT' : 'DARK';
-    } // theme check
-}
 
 
 // ========================================================================
@@ -282,7 +228,7 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
   $list.append(element);
   layoutInvalidated();
 
-  function onPress() {
+  function onPress(e) {
       //console.log('........onPress');
     lastX = this.x;
     tile.isDragging = true;
@@ -328,6 +274,7 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
     }
 
     lastX = this.x;
+      return true;
   }
 
   function onRelease() {
@@ -706,3 +653,61 @@ function removeTemporaryTiles(ignoreId) {
         layoutInvalidated();
     }
 };
+
+// mostly poached from StylesheetService.js ....
+function toggleTheme(theme){
+    var dark = $("#toggleDarkTheme");
+    var light = $("#toggleLightTheme");
+    if(theme === 'DARK'){
+        dark.prop('disabled', true);
+        light.prop('disabled', false)
+    } else {
+        dark.prop('disabled', false);
+        light.prop('disabled', true)
+    }
+
+    if(theme !== currentTheme){
+        var _updateStylesheetInDom = function(oldSheet, newHref){
+            var newSheet = window.document.createElement("link");
+            newSheet.setAttribute("rel", "stylesheet");
+            newSheet.setAttribute("type", "text/css");
+            var cacheBust = '?tt' + new Date().getTime();
+            newSheet.setAttribute("href", newHref + cacheBust);
+            newSheet.setAttribute('title', 'dashboard-styles');
+            window.document.getElementsByTagName("head").item(0).replaceChild(newSheet, oldSheet);
+        };
+
+        var sheets = window.document.getElementsByTagName("link");
+        if(!sheets || sheets === undefined || sheets.length === 0){
+            return;
+        }
+        var oldSheet;
+        for(var x=0; x<sheets.length; x++){
+            if(sheets[x].title !== undefined && sheets[x].title === 'dashboard-styles'){
+                oldSheet = sheets[x];
+                break;
+            }
+        }
+
+        if(oldSheet === undefined){
+            return;
+        }
+
+        var currHref = oldSheet.href;
+
+        // already loaded ?
+        var targetStyle = currentTheme === 'DARK' ? 'greensock-example-light.css' : 'greensock-example-dark.css';
+
+        var actualCurrentStyle = currHref.substr(currHref.lastIndexOf('/') + 1);
+
+        // trim off the querystring
+        if(actualCurrentStyle.indexOf('?') > 0){
+            var parts = actualCurrentStyle.split('?');
+            actualCurrentStyle = parts[0];
+        }
+        _updateStylesheetInDom(oldSheet, currHref.replace(actualCurrentStyle, targetStyle));
+
+        // set current theme on the way out ....
+        currentTheme = (currentTheme === 'DARK') ? 'LIGHT' : 'DARK';
+    } // theme check
+}

@@ -9,7 +9,7 @@ var chartMap = {
             return '<div style="padding-left:0; padding-top:10px;height:100%;text-align:center;" id="' + chartMap.classMetricsLine.inner + '"><div class="chart-icon" style="margin-bottom:10px;font-size:18pt;">Member Metrics Summary (Line Chart)</div><i class="fa fa-line-chart" style="font-size:20em;"></i></div></div>';
         },
         html : function(){
-            return '<div id="'+ chartMap.classMetricsLine.inner +'" style="width:100%;height:90%"><svg style="height:95%; width:95%"></svg></div>';
+            return '<div id="'+ chartMap.classMetricsLine.inner +'" style="width:100%;height:90%"><svg class="specialLineChartSvg" style="height:95%; width:95%"></svg></div>';
         }
     },
     classMetricsBar : {

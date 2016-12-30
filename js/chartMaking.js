@@ -346,9 +346,6 @@ var ClassMetricsLineChart = {
                     .datum(chartData)         //Populate the <svg> element with chart data...
                     .call(chart);          //Finally, render the chart!
 
-                // chart.lines.dispatch.on("elementClick", function(e) {
-                //     alert("You've clicked " + e.data.label);
-                // });
 
                 //Update the chart when window resizes.
                 //nv.utils.windowResize(function() { chart.update() });
@@ -356,12 +353,34 @@ var ClassMetricsLineChart = {
             },  // call back from .addGraph
                 function(_chart){
                     ClassMetricsLineChart.chart = _chart;
+                    ClassMetricsLineChart.chart.lines.dispatch.on("elementClick", function(e){
+                        console.log(e);
+                        $("#modalTest").modal('show');
+
+                        // console.log('element: ' + e.value);
+                        // console.dir(e.point);
+                    });
+                    ClassMetricsLineChart.chart.legend.dispatch.on("legendClick", function(__data__){
+                        // weird, sometimes there is no .disabled property!!
+                        if(__data__ && __data__.key !== undefined) { // they clicked on legend
+                            if (__data__.key === 'Attendance Count') {
+                                ClassMetricsLineChart.attendanceCountDisabled = !ClassMetricsLineChart.attendanceCountDisabled;
+                                ClassMetricsBarChart.attendanceCountDisabled = !ClassMetricsBarChart.attendanceCountDisabled;
+                                ClassMetricsBarChart.chart.dispatch.changeState({disabled: [ClassMetricsBarChart.attendanceCountDisabled, ClassMetricsBarChart.reservationCountDisabled] });
+                            } else { // key === 'Reservation Count'
+                                ClassMetricsLineChart.reservationCountDisabled = !ClassMetricsLineChart.reservationCountDisabled;
+                                ClassMetricsBarChart.reservationCountDisabled = !ClassMetricsBarChart.reservationCountDisabled;
+                                ClassMetricsBarChart.chart.dispatch.changeState({disabled: [ClassMetricsBarChart.attendanceCountDisabled, ClassMetricsBarChart.reservationCountDisabled] });
+                            }
+                        }
+                    });
                 }
             );
         }; // doChartWork
 
         if(!helperCache.userMetricsLoaded){
-            var jqxhr = $.get( "http://192.168.49.140:5102/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016", function(data) {
+            var url = warehouseDataServer + '/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016';
+            var jqxhr = $.get(url, function(data) {
                 console.log('.... loading user metric data from .net backend ....');
                     helperCache.translateServerData(data);
                     doChartWork();
@@ -376,27 +395,42 @@ var ClassMetricsLineChart = {
         } else {
             doChartWork();
         }
-        $(document).on("click", "#divInnerClassMetricsChart svg", function(e) {
+        // setTimeout(function() {
+        //
+        //     // $("g.nv-point-paths").on("hover", function (d) {
+        //     //     $("g.nv-point-paths path").off("click");
+        //         $("g.nv-point-paths path").on("click", function (d) {
+        //             var xAxisValue = d.currentTarget.__data__.data.point[4].x;
+        //             console.log(d);
+        //         });
+        //     //});
+        //
+        //     // d3.selectAll(".specialLineChartSvg").on("click", function (e) {
+        //     //     alert("clicked");
+        //     //     console.log(e);
+        //     // });
+        // }, 2000);
 
-            // for toggling other graph
-            var __data__ = e.target.__data__;
 
-            if(__data__ && __data__.key !== undefined) { // they clicked on legend
-                if (__data__.key === 'Attendance Count') {
-                    ClassMetricsLineChart.attendanceCountDisabled = __data__.disabled;
-                    ClassMetricsBarChart.chart.dispatch.changeState({disabled: [__data__.disabled, ClassMetricsLineChart.reservationCountDisabled] });
-                } else { // key === 'Reservation Count'
-                    ClassMetricsLineChart.reservationCountDisabled = __data__.disabled;
-                    ClassMetricsBarChart.chart.dispatch.changeState({disabled: [ClassMetricsLineChart.attendanceCountDisabled, __data__.disabled] });
-                }
-
-            } else { // not clicked on legend
-                $("#modalTest").modal('show');
-                console.log (e);
-                console.log (e.target.__data__);
-            }
-            //ClassMetricsBarChart.chart.dispatch.changeState({disabled: {0: true}});
-        });
+        // $(document).on("click", "#divInnerClassMetricsChart svg", function(e) {
+        //
+        //     // for toggling other graph
+        //     var __data__ = e.target.__data__;
+        //
+        //     if(__data__ && __data__.key !== undefined) { // they clicked on legend
+        //         if (__data__.key === 'Attendance Count') {
+        //             ClassMetricsLineChart.attendanceCountDisabled = __data__.disabled;
+        //             ClassMetricsBarChart.chart.dispatch.changeState({disabled: [__data__.disabled, ClassMetricsLineChart.reservationCountDisabled] });
+        //         } else { // key === 'Reservation Count'
+        //             ClassMetricsLineChart.reservationCountDisabled = __data__.disabled;
+        //             ClassMetricsBarChart.chart.dispatch.changeState({disabled: [ClassMetricsLineChart.attendanceCountDisabled, __data__.disabled] });
+        //         }
+        //
+        //     } else { // not clicked on legend
+        //
+        //     }
+        //     //ClassMetricsBarChart.chart.dispatch.changeState({disabled: {0: true}});
+        // });
     } // makeChart
 };
 
@@ -458,12 +492,36 @@ var ClassMetricsBarChart = {
                 // call back from .addGraph
                 function(_chart){
                     ClassMetricsBarChart.chart = _chart;
+
+                    ClassMetricsBarChart.chart.interactiveLayer.dispatch.on("elementClick", function(e){
+                        console.log(e);
+                        // console.log('element: ' + e.value);
+                        // console.dir(e.point);
+                    });
+
+                    ClassMetricsBarChart.chart.legend.dispatch.on("legendClick", function(__data__){
+                        // weird, sometimes there is no .disabled property!!
+                        if(__data__ && __data__.key !== undefined) { // they clicked on legend
+                            if (__data__.key === 'Attendance Count') {
+                                // todo: only really need one 'set' of flags, series0Disabled / series1Disabled ... but ... meh
+                                ClassMetricsBarChart.attendanceCountDisabled = !ClassMetricsBarChart.attendanceCountDisabled;
+                                ClassMetricsLineChart.attendanceCountDisabled = !ClassMetricsLineChart.attendanceCountDisabled;
+                                ClassMetricsLineChart.chart.dispatch.changeState({disabled: [ClassMetricsLineChart.attendanceCountDisabled, ClassMetricsLineChart.reservationCountDisabled] });
+                            } else { // key === 'Reservation Count'
+                                ClassMetricsBarChart.reservationCountDisabled = !ClassMetricsBarChart.reservationCountDisabled;
+                                ClassMetricsLineChart.reservationCountDisabled = !ClassMetricsLineChart.reservationCountDisabled;
+                                ClassMetricsLineChart.chart.dispatch.changeState({disabled: [ClassMetricsLineChart.attendanceCountDisabled, ClassMetricsLineChart.reservationCountDisabled] });
+                            }
+
+                        }
+                    });
                 }
             );
         }; // doChartWork
 
         if(!helperCache.userMetricsLoaded){
-            var jqxhr = $.get( "http://192.168.49.140:5102/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016", function(data) {
+            var url = warehouseDataServer + '/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016';
+            var jqxhr = $.get(url, function(data) {
                 console.log('.... loading user metric data from .net backend ....');
                 helperCache.translateServerData(data);
                 doChartWork();
@@ -478,25 +536,5 @@ var ClassMetricsBarChart = {
         } else {
             doChartWork();
         }
-
-        $(document).on("click", "#divInnerClassMetricsBarChart svg", function(e) {
-
-            // for toggling other graph
-            var __data__ = e.target.__data__;
-
-            // dispatch to the other chart to enable / disable that series
-            // NOTE: bar chart didn't have seriesIndex in __data__, so using "key"
-            if(__data__ && __data__.key !== undefined) { // they clicked on legend
-                if (__data__.key === 'Attendance Count') {
-                    ClassMetricsBarChart.attendanceCountDisabled = __data__.disabled;
-                    ClassMetricsLineChart.chart.dispatch.changeState({disabled: [__data__.disabled, ClassMetricsBarChart.reservationCountDisabled] });
-                } else { // key === 'Reservation Count'
-                    ClassMetricsBarChart.reservationCountDisabled = __data__.disabled;
-                    ClassMetricsLineChart.chart.dispatch.changeState({disabled: [ClassMetricsBarChart.attendanceCountDisabled, __data__.disabled] });
-                }
-
-            }
-        });
-
     } // makeChart
 };
