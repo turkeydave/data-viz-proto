@@ -4,7 +4,7 @@ html {
 
 body {
   background: #FFFFFF;
-  padding: 25px;
+  padding: 10px;
 }
 
 *, *:before, *:after {
@@ -26,6 +26,9 @@ h1 a {
 h1 a:hover {
   color: yellowgreen;
   border-color: yellowgreen;
+}
+h3,h4 {
+  color: #4aa0ef;
 }
 
 button {
@@ -55,13 +58,13 @@ button:focus {
   margin-top: 50px;
 }
 #right-bar {
-  margin-right: 5px;
+  margin-right: 0px;
   text-align: right;
   color:rgba(76, 76, 76, 0.72);
   width: 100px;
   position: absolute;
   display: block;
-  top: 110px;
+  top: 0;
   right: 0;
   min-height: 75%;
 }
@@ -157,8 +160,8 @@ svg {
   stroke-width:1;
 }
 .nvd3 text {
-  fill: rgba(76, 76, 76, 0.72);;
-  stroke: rgba(76, 76, 76, 0.72);;
+  fill: rgba(76, 76, 76, 0.72);
+  stroke: rgba(76, 76, 76, 0.72);
   stroke-width:1;
   /*stroke-opacity: .75;*/
   /*shape-rendering: crispEdges;*/
@@ -180,4 +183,13 @@ svg {
 
 .memberSummaryLabel {
   color: #3a3a4d;
+}
+
+
+.fakeChartDiv{
+  font-weight:normal;
+  color:rgba(76, 76, 76, 0.72);
+}
+.fakeChartTd{
+  border-bottom:1pt solid #e8e8e8;
 }

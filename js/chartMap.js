@@ -1,5 +1,31 @@
 
 var chartMap = {
+    makeFakeChart : function(attCount, rezyCount){
+        var html = '';
+        html = '<button id="specialBackButton" style="position:absolute;top:0;right:0" onClick="return globalTableBack();">BACK</button>';
+        html += '<div class="specialLineChartTable" style="height:100%; width:100%;">';
+            html += '<div style="max-height: 350px; overflow-y:scroll">';
+                html += '<h4>Attendances</h4>';
+                html += '<div class="fakeChartDiv" style="width: 100%;">';
+                    html += '<table style="width: 100%">';
+                    for(var i = 0; i < attCount; i++){
+                        html += '<tr><td class="fakeChartTd" style="width: 65%">Fake Name</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2015</td></tr>';
+                    }
+                    html += '</table>';
+                html += '</div>';
+                html += '<h4>Reservations</h4>';
+                html += '<div class="fakeChartDiv" style="width: 100%;">';
+                    html += '<table style="width: 100%">';
+                    for(var i = 0; i < rezyCount; i++){
+                        html += '<tr><td class="fakeChartTd" style="width: 65%">Fake Name</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2015</td></tr>';
+                    }
+                    html += '</table>';
+                html += '</div>';
+            html += '</div>';
+        html += '</div>';
+        return html;
+    },
+
     classMetricsLine : {
         default : true,
         container : 'divContainerClassMetricsChart',

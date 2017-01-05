@@ -32,6 +32,56 @@ function sinAndCos() {
     ];
 }
 
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+var noBackendData = function() {
+    var data = {};
+    data.January = {};
+    data.January.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.January.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.February = {};
+    data.February.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.February.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.March = {};
+    data.March.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.March.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.April = {};
+    data.April.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.April.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.May = {};
+    data.May.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.May.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.June = {};
+    data.June.Fact_Attendance_Count  = getRandomIntInclusive(0, 50);
+    data.June.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.July = {};
+    data.July.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.July.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.August = {};
+    data.August.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.August.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.September = {};
+    data.September.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.September.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.October = {};
+    data.October.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.October.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.November = {};
+    data.November.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.November.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.December = {};
+    data.December.Fact_Attendance_Count = getRandomIntInclusive(0, 50);
+    data.December.Fact_Reservation_Count = getRandomIntInclusive(0, 50);
+    data.All = {};
+    data.All.Fact_Attendance_Count = getRandomIntInclusive(100, 100);
+    data.All.Fact_Reservation_Count = getRandomIntInclusive(100, 100);
+    return data;
+};
+
 var helperCache = {
     monthNames : [
         {val: "Jan"},
@@ -180,10 +230,10 @@ var MembersChart = {
     makeChart : function(){
 
         var testdata = [
-            {key: "Prospects", y: 5},
-            {key: "New", y: 22},
-            {key: "At Risk", y: 9},
-            {key: "Cancelled", y: 7}
+            {key: "Prospects", y: getRandomIntInclusive(2, 20)},
+            {key: "New", y: getRandomIntInclusive(2, 50)},
+            {key: "At Risk", y: getRandomIntInclusive(2, 20)},
+            {key: "Cancelled", y: getRandomIntInclusive(2, 10)}
         ];
         var height = 350;
         var width = 350;
@@ -234,19 +284,12 @@ var MembersChart = {
 
 var MembersChartNumbers = {
     makeChart : function(id){
-
-        var testdata = [
-            {key: "Prospects", y: 5},
-            {key: "New", y: 22},
-            {key: "At Risk", y: 9},
-            {key: "Cancelled", y: 7}
-        ];
         var html = "<div style='position:relative'>";
             html += "<div class='memberSummaryLabel' style='width:100%; position:absolute; top:0px; text-align:center;'>Members Summary</div>";
-            html += "<div style='width:50%; position:absolute; top:35px; left: 0px; text-align:center; color: #008000;'><div>PROSPECTS</div><div style='font-size:48pt;'>5</div></div>";
-            html += "<div style='width:50%; position:absolute; top:35px; left: 50%; text-align:center; color: #5EC0E8;'><div>NEW</div><div style='font-size:48pt;'>22</div></div>";
-            html += "<div style='width:50%; position:absolute; top:200px; left: 0px; text-align:center; color: #EA6060;'><div>AT RISK</div><div style='font-size:48pt;'>9</div></div>";
-            html += "<div style='width:50%; position:absolute; top:200px; left: 50%; text-align:center; color: #FFA500;'><div>CANCELLED</div><div style='font-size:48pt;'>7</div></div>";
+            html += "<div style='width:50%; position:absolute; top:35px; left: 0px; text-align:center; color: #008000;'><div>PROSPECTS</div><div style='font-size:48pt;'>" + getRandomIntInclusive(2, 20) + "</div></div>";
+            html += "<div style='width:50%; position:absolute; top:35px; left: 50%; text-align:center; color: #5EC0E8;'><div>NEW</div><div style='font-size:48pt;'>" + getRandomIntInclusive(2, 50) + "</div></div>";
+            html += "<div style='width:50%; position:absolute; top:200px; left: 0px; text-align:center; color: #EA6060;'><div>AT RISK</div><div style='font-size:48pt;'>" + getRandomIntInclusive(2, 20) + "</div></div>";
+            html += "<div style='width:50%; position:absolute; top:200px; left: 50%; text-align:center; color: #FFA500;'><div>CANCELLED</div><div style='font-size:48pt;'>" + getRandomIntInclusive(2, 10) + "</div></div>";
         html += "</div>";
 
         $('#' + id).html(html);
@@ -258,10 +301,10 @@ var MembershipsChart = {
     makeChart : function(){
 
         var testdata = [
-            {key: "Yearly WOT", y: 5},
-            {key: "20 Cycling Punch", y: 22},
-            {key: "Hot Yoga Monthly", y: 9},
-            {key: "Sweet WOD Forever", y: 7}
+            {key: "Yearly WOT", y: getRandomIntInclusive(0, 30)},
+            {key: "20 Cycling Punch", y: getRandomIntInclusive(0, 30)},
+            {key: "Hot Yoga Monthly", y: getRandomIntInclusive(0, 30)},
+            {key: "Sweet WOD Forever", y: getRandomIntInclusive(0, 30)}
         ];
         var height = 350;
         var width = 350;
@@ -295,6 +338,28 @@ var MembershipsChart = {
             });
 
     }
+};
+
+// hack helper to hide dyno result table and reshow chart .... hackity hack, don't look back
+var globalTableBack = function(){
+    // re-show chart
+    var $lineChartSvg = $(".specialLineChartSvg");
+    $lineChartSvg.toggle();
+    // remove fake html table
+    $('.specialLineChartTable').remove();
+
+    // remove back button
+    $('#specialBackButton').remove();
+
+    // more hackity ... for some reason 'onRelease' not being called ... didn't have time .. retween back to original size and opacity
+    var element = $('#' + chartMap.classMetricsLine.container)[0];
+    TweenLite.to(element, 0.2, {
+        autoAlpha : 1,
+        boxShadow: shadow1,
+        scale     : 1
+    });
+
+    return true;
 };
 
 var ClassMetricsLineChart = {
@@ -354,8 +419,27 @@ var ClassMetricsLineChart = {
                 function(_chart){
                     ClassMetricsLineChart.chart = _chart;
                     ClassMetricsLineChart.chart.lines.dispatch.on("elementClick", function(e){
+
+                        var attCount = 0, rezyCount = 0, pointIdx = 0;
+                        // to get the point ...
+                        if(e.length === 2){
+                            var att = e[0];
+                            pointIdx = att.pointIndex;
+                            attCount = att.series.values[pointIdx].y;
+                            var rezy = e[1];
+                            pointIdx = rezy.pointIndex;
+                            rezyCount = rezy.series.values[pointIdx].y;
+                            console.log('AttendanceCount value: ' + attCount + ', ReservationCount: ' + rezyCount);
+                        }
+
+                        var $lineChartSvg = $(".specialLineChartSvg");
+                        $lineChartSvg.toggle();
+                        $lineChartSvg.after(chartMap.makeFakeChart(attCount, rezyCount));
+
                         console.log(e);
-                        $("#modalTest").modal('show');
+
+
+                        //$("#modalTest").modal('show');
 
                         // console.log('element: ' + e.value);
                         // console.dir(e.point);
@@ -379,58 +463,27 @@ var ClassMetricsLineChart = {
         }; // doChartWork
 
         if(!helperCache.userMetricsLoaded){
-            var url = warehouseDataServer + '/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016';
-            var jqxhr = $.get(url, function(data) {
-                console.log('.... loading user metric data from .net backend ....');
-                    helperCache.translateServerData(data);
-                    doChartWork();
-                })
-                .done(function() {
-                    //alert( "second success" );
-                })
-                .fail(function() {
-                    alert( "error" );
-                });
+            // no backend
+            var data = noBackendData();
+            helperCache.translateServerData(data);
+            doChartWork();
+
+            // var url = warehouseDataServer + '/api/warehouse/EE0DB82E-F1C3-4FC6-9976-8852F3F52D33/2016';
+            // var jqxhr = $.get(url, function(data) {
+            //     console.log('.... loading user metric data from .net backend ....');
+            //         helperCache.translateServerData(data);
+            //         doChartWork();
+            //     })
+            //     .done(function() {
+            //         //alert( "second success" );
+            //     })
+            //     .fail(function() {
+            //         alert( "error" );
+            //     });
 
         } else {
             doChartWork();
         }
-        // setTimeout(function() {
-        //
-        //     // $("g.nv-point-paths").on("hover", function (d) {
-        //     //     $("g.nv-point-paths path").off("click");
-        //         $("g.nv-point-paths path").on("click", function (d) {
-        //             var xAxisValue = d.currentTarget.__data__.data.point[4].x;
-        //             console.log(d);
-        //         });
-        //     //});
-        //
-        //     // d3.selectAll(".specialLineChartSvg").on("click", function (e) {
-        //     //     alert("clicked");
-        //     //     console.log(e);
-        //     // });
-        // }, 2000);
-
-
-        // $(document).on("click", "#divInnerClassMetricsChart svg", function(e) {
-        //
-        //     // for toggling other graph
-        //     var __data__ = e.target.__data__;
-        //
-        //     if(__data__ && __data__.key !== undefined) { // they clicked on legend
-        //         if (__data__.key === 'Attendance Count') {
-        //             ClassMetricsLineChart.attendanceCountDisabled = __data__.disabled;
-        //             ClassMetricsBarChart.chart.dispatch.changeState({disabled: [__data__.disabled, ClassMetricsLineChart.reservationCountDisabled] });
-        //         } else { // key === 'Reservation Count'
-        //             ClassMetricsLineChart.reservationCountDisabled = __data__.disabled;
-        //             ClassMetricsBarChart.chart.dispatch.changeState({disabled: [ClassMetricsLineChart.attendanceCountDisabled, __data__.disabled] });
-        //         }
-        //
-        //     } else { // not clicked on legend
-        //
-        //     }
-        //     //ClassMetricsBarChart.chart.dispatch.changeState({disabled: {0: true}});
-        // });
     } // makeChart
 };
 

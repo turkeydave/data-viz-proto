@@ -41,19 +41,18 @@ var gutterStep = null;
 var shadow1 = "0 1px 3px  0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.6)";
 var shadow2 = "0 6px 10px 0 rgba(0, 0, 0, 0.3), 0 2px 2px 0 rgba(0, 0, 0, 0.2)";
 
-var currMouseOverX = 150;
-var currMouseOverY = 150;
+// var currMouseOverX = 150;
+// var currMouseOverY = 150;
 
 $(window).resize(resize);
 
 $mode.change(init);
 
 var isTablet = false;
+var isStudio = false;
 var listWidth = 800;
-var xOffset = 0;
-var jankOffsetX1 = 325; // sqaure panel
-var jankOffsetX2 = 625; // 2 wide panel
-var jankOffsetY = 450;
+//var xOffset = 0;
+var yOffset = 0;
 
 init();
 
@@ -71,6 +70,9 @@ function init() {
     }
     if(window.location.href.toLowerCase().indexOf('istablet=true') > 0){
         isTablet = true;
+    }
+    if(window.location.href.toLowerCase().indexOf('isstudio=true') > 0){
+        isStudio = true;
     }
 
 
@@ -229,7 +231,7 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
   layoutInvalidated();
 
   function onPress(e) {
-      //console.log('........onPress');
+      console.log('........onPress');
     lastX = this.x;
     tile.isDragging = true;
     tile.lastIndex  = tile.index;
@@ -278,7 +280,7 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
   }
 
   function onRelease() {
-    //console.log('........onRelease');
+    console.log('........onRelease');
       tile.isTemp = false;
       //toggleOptionButton(this._eventTarget.id, false);
       if(!tile.isLoaded){
@@ -306,6 +308,7 @@ function createTile(id, innerHtml, isDouble, isFromMenu) {
     });
 
     tile.isDragging = false;
+    return true;
   }
 }
 
@@ -386,17 +389,19 @@ function layoutInvalidated(rowToUpdate) {
 
       // move temps to where the menu hover was ....
       if(tile.isTemp){
-          var xHack = 0, yHack = 0;
-          if(isTablet){
-              xHack = $('#list').width() - (tile.colspan === 2 ? 620 : 320);
-              yHack = xOffset - 210;
-          } else {
-              xHack = currMouseOverX - (tile.colspan === 2 ? jankOffsetX2 : jankOffsetX1);
-              yHack = currMouseOverY - jankOffsetY;
-          }
-          //console.log('current: x: ' + currMouseOverX + ', Y: ' + currMouseOverY);
-        tile.x = xHack;//listWidth; // currMouseOverX - (tile.colspan === 2 ? jankOffsetX2 : jankOffsetX1);
-        tile.y = yHack; //xOffset; //currMouseOverY - jankOffsetY;
+          var xHack = $('#list').width() - (tile.colspan === 2 ? 610 : 320),
+              yHack = yOffset - 175; // come up half a tile height .....
+          // if(isTablet) {
+          //     xHack = $('#list').width() - (tile.colspan === 2 ? 610 : 320);
+          //     //yHack = xOffset - 210;
+          // }else if (isStudio){
+          //     xHack = $('#list').width() - (tile.colspan === 2 ? 610 : 320);
+          //     //xHack = currMouseOverX;
+          // } else {
+          //
+          // }
+        tile.x = xHack;
+        tile.y = yHack;
       }
       timeline.fromTo(element, time, from, to, "reflow");
     } else if (tile.width === (tile.colspan * colSize + ((tile.colspan - 1) * gutterStep) ) * .75){
@@ -442,9 +447,7 @@ function layoutInvalidated(rowToUpdate) {
 // -------------------------------- functional stuff --------------------------
 function selectTile (ex){
     // todo: use clientY for when we have menu on the side bar
-    xOffset = ex.target.offsetTop;
-    currMouseOverX = ex.screenX; //- ex.offsetX; // ex.clientX;
-    currMouseOverY = ex.screenY; // - ex.offsetY; // ex.clientY;
+    yOffset = ex.target.offsetTop;
 
     if(ex.currentTarget.id === chartMap.classMetricsLine.linkId ) {
         removeTemporaryTiles(chartMap.classMetricsLine.container );
