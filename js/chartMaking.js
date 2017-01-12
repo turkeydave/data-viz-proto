@@ -301,7 +301,7 @@ var MembersChart = {
                     $("#" + chartMap.memberDoughnut.inner).css( "padding-left", "0px" );
                     $("#" + chartMap.memberDoughnut.inner).css( "margin-left", "-20px" );
 
-                    console.log(e);
+                    //console.log(e);
                 });
             });
 
@@ -334,7 +334,7 @@ var MemberDonutChildLineChart = {
             var chartData = [
                 {
                     values: MemberDonutChildLineChart.data,      //values - represents the array of {x,y} data points
-                    key: 'Reasons', //key  - the name of the series.
+                    key: 'Churn Reasons', //key  - the name of the series.
                     color: '#c844ff'  //color - optional: choose your own line color.
                 }
             ];
@@ -344,7 +344,7 @@ var MemberDonutChildLineChart = {
                     var chart = nv.models.lineChart()
                             .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
                             .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                            .showLegend(false)       //Show the legend, allowing users to turn on/off line series.
+                            .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
                             .showYAxis(true)        //Show the y-axis
                             .showXAxis(true)        //Show the x-axis
                             .useInteractiveGuideline(false)
