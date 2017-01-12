@@ -48,10 +48,6 @@ button:focus {
 }
 
 #list {
-  /*background-color: rgba(0, 0, 0, 0.2);*/
-  /*background-color: #FFF;*/
-  /*width: 250px;*/
-  /*width: 90%;*/
   width: 0;
   position: relative;
   display: block;
@@ -70,7 +66,7 @@ button:focus {
 }
 div.chart-icon {
   margin-top:10px;
-  color: rgba(76, 76, 76, 0.72);
+  color: #cacaca;
 }
 div.chart-icon:hover {
   color: yellowgreen;
@@ -79,9 +75,8 @@ div.chart-icon:hover {
 .tile {
   display: block;
   position: absolute;
-  /*background-color: yellowgreen;*/
   background-color: rgba(244, 244, 244, 0.06);
-  color: #3A3A4D;
+  color: #cacaca;
   padding: 5px;
   font-weight: bold;
 }
@@ -141,12 +136,12 @@ svg {
 
 .nvd3.nv-pie.nv-chart-donut2 .nv-pie-title {
   fill: rgba(70, 107, 168, 0.78);
-  stroke: rgba(70, 107, 168, 0.78);
+  stroke-width:0;
 }
 .nvd3.nv-pie.nv-chart-donut1 .nv-pie-title {
   opacity: 0.4;
   fill: rgba(224, 116, 76, 0.91);
-  stroke: rgba(224, 116, 76, 0.91);
+  stroke-width: 0;
 }
 .nv-axis .tick line {
   fill: #000;
@@ -161,24 +156,34 @@ svg {
 }
 .nvd3 text {
   fill: rgba(76, 76, 76, 0.72);
-  stroke: rgba(76, 76, 76, 0.72);
-  stroke-width:1;
-  /*stroke-opacity: .75;*/
-  /*shape-rendering: crispEdges;*/
+  font: normal 13px Arial;
+  stroke-width:0;
+  shape-rendering: crispEdges;
 }
 .nvd3 .nv-axis text {
   fill: rgba(76, 76, 76, 0.72);;
-  stroke: rgba(76, 76, 76, 0.72);;
-  stroke-width:1;
-  /*stroke-opacity: .75;*/
-  /*shape-rendering: crispEdges;*/
+  stroke-width:0;
+  shape-rendering: crispEdges;
+}
+.nvd3.nv-pie .nv-label{
+  fill:rgba(76, 76, 76, 0.72);
+}
+#divInnerClassMetricsBarChart > svg > g > g > g.nv-controlsWrap.nvd3-svg {
+  transform: translate(-70px, -30px) !important;
+}
+#memberDoughnut > g > g > g.nv-pieWrap.nvd3-svg > g > g > g.nv-pie text{
+  font-size: 24pt !important;
+}
+#memberDoughnut > g > g > g.nv-pieWrap.nvd3-svg > g > g > g.nv-pieLabels .nv-label text{
+  fill: rgba(76, 76, 76, 0.72) !important;
+}
+#memberDoughnut > g > g > g.nv-legendWrap.nvd3-svg > g > g > g.nv-series text{
+  font: normal 12px Arial;
 }
 .nvd3 .nv-legend text {
-  fill: rgba(76, 76, 76, 0.72);;
-  stroke: rgba(76, 76, 76, 0.72);;
-  stroke-width:1;
-  /*stroke-opacity: .75;*/
-  /*shape-rendering: crispEdges;*/
+  fill: rgba(76, 76, 76, 0.72);
+  stroke-width:0;
+  shape-rendering: crispEdges;
 }
 
 .memberSummaryLabel {

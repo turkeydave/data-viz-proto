@@ -74,7 +74,6 @@ div.chart-icon:hover {
 .tile {
   display: block;
   position: absolute;
-  /*background-color: yellowgreen;*/
   background-color:rgba(0, 0, 0, 0.5);
   color: #3A3A4D;
   padding: 5px;
@@ -136,12 +135,12 @@ svg {
 
 .nvd3.nv-pie.nv-chart-donut2 .nv-pie-title {
   fill: rgba(70, 107, 168, 0.78);
-  stroke: rgba(70, 107, 168, 0.78);
+  stroke-width:0;
 }
 .nvd3.nv-pie.nv-chart-donut1 .nv-pie-title {
   opacity: 0.4;
   fill: rgba(224, 116, 76, 0.91);
-  stroke: rgba(224, 116, 76, 0.91);
+  stroke-width:0;
 }
 .nv-axis .tick line {
   fill: #E8E8E8;
@@ -156,24 +155,34 @@ svg {
 }
 .nvd3 text {
   fill: #FFF;
-  stroke: #FFF;
-  stroke-width:1;
-  /*stroke-opacity: .75;*/
-  /*shape-rendering: crispEdges;*/
+  font: normal 13px Arial;
+  stroke-width:0;
+  shape-rendering: crispEdges;
 }
 .nvd3 .nv-axis text {
   fill: #FFF;
-  stroke: #FFF;
-  stroke-width:1;
-  /*stroke-opacity: .75;*/
-  /*shape-rendering: crispEdges;*/
+  stroke-width:0;
+  shape-rendering: crispEdges;
+}
+.nvd3.nv-pie .nv-label{
+  fill:#FFF;
+}
+#divInnerClassMetricsBarChart > svg > g > g > g.nv-controlsWrap.nvd3-svg {
+  transform: translate(-70px, -30px) !important;
+}
+#memberDoughnut > g > g > g.nv-pieWrap.nvd3-svg > g > g > g.nv-pie text{
+  font-size: 24pt !important;
+}
+#memberDoughnut > g > g > g.nv-pieWrap.nvd3-svg > g > g > g.nv-pieLabels .nv-label text{
+  fill: white !important;
+}
+#memberDoughnut > g > g > g.nv-legendWrap.nvd3-svg > g > g > g.nv-series text{
+  font: normal 12px Arial;
 }
 .nvd3 .nv-legend text {
   fill: #FFF;
-  stroke: #FFF;
-  stroke-width:1;
-  /*stroke-opacity: .75;*/
-  /*shape-rendering: crispEdges;*/
+  stroke-width:0;
+  shape-rendering: crispEdges;
 }
 
 .memberSummaryLabel {
