@@ -8,17 +8,32 @@ var chartMap = {
                 html += '<h4>Attendances</h4>';
                 html += '<div class="fakeChartDiv" style="width: 100%;">';
                     html += '<table style="width: 100%">';
-                    for(var i = 0; i < attCount; i++){
-                        html += '<tr><td class="fakeChartTd" style="width: 65%">Fake Name</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2015</td></tr>';
-                    }
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Samuel Adams</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2016</td></tr>';
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Gandalf TheGrey</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2016</td></tr>';
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Frodo Baggins</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">02/02/2016</td></tr>';
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Adolph Coors</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">02/28/2016</td></tr>';
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Samuel Jackson</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">03/13/2016</td></tr>';
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Ara Gorn</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">03/30/2016</td></tr>';
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Jack Daniels</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">03/30/2016</td></tr>';
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Arnold Palmer</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">11/10/2016</td></tr>';
+                    html += '<tr><td class="fakeChartTd" style="width: 65%">Jack Nicholson</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">11/22/2016</td></tr>';
+                    // for(var i = 0; i < attCount; i++){
+                    //     html += '<tr><td class="fakeChartTd" style="width: 65%">Fake Name</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2015</td></tr>';
+                    // }
                     html += '</table>';
                 html += '</div>';
                 html += '<h4>Reservations</h4>';
                 html += '<div class="fakeChartDiv" style="width: 100%;">';
                     html += '<table style="width: 100%">';
-                    for(var i = 0; i < rezyCount; i++){
-                        html += '<tr><td class="fakeChartTd" style="width: 65%">Fake Name</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2015</td></tr>';
-                    }
+                        html += '<tr><td class="fakeChartTd" style="width: 65%">Marianne Adams</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2016</td></tr>';
+                        html += '<tr><td class="fakeChartTd" style="width: 65%">Amber Adams</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2016</td></tr>';
+                        html += '<tr><td class="fakeChartTd" style="width: 65%">Samwise Gamgee</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">02/02/2016</td></tr>';
+                        html += '<tr><td class="fakeChartTd" style="width: 65%">TheGreen Dragon</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">02/28/2016</td></tr>';
+                        html += '<tr><td class="fakeChartTd" style="width: 65%">Floyd Landis</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">03/13/2016</td></tr>';
+                        html += '<tr><td class="fakeChartTd" style="width: 65%">Stu Thorn</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">03/30/2016</td></tr>';
+                    // for(var i = 0; i < rezyCount; i++){
+                    //     html += '<tr><td class="fakeChartTd" style="width: 65%">Fake Name</td><td style="width:10%">&nbsp;</td><td class="fakeChartTd" style="width:25%">01/10/2015</td></tr>';
+                    // }
                     html += '</table>';
                 html += '</div>';
             html += '</div>';
@@ -59,7 +74,10 @@ var chartMap = {
             return '<div style="padding-left:0; padding-top:50px;height:100%;text-align:center;" id="' + chartMap.memberDoughnut.inner + '"><div class="chart-icon" style="margin-top:-50px;margin-bottom:10px;font-size:18pt;">Members Categories</div><i class="fa fa-pie-chart" style="font-size:20em;"></i></div></div>';
         },
         html : function(){
-            return '<div id="' + chartMap.memberDoughnut.inner + '" style="padding-left:20px; padding-top:20px"><svg id="memberDoughnut" class="mypiechart"></svg></div>';
+            var html = '<button id="childBackButton" style="position:absolute;top:0;right:0;display:none;" onClick="return globalChildBack();">BACK</button>';
+            html += '<div id="' + chartMap.memberDoughnut.inner + '" style="padding-left:20px; padding-top:20px; height: 90%">';
+            html += '<svg id="memberDoughnut" class="mypiechart"></svg><svg id="memberDoughnutChild" class="mypiechart" style="display:none;"></svg></div>';
+            return html
         }
     },
     memberSummaryNumbers : {

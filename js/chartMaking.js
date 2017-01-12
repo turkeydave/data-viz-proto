@@ -227,6 +227,7 @@ var SinChart = {
 };
 
 var MembersChart = {
+    chart: null,
     makeChart : function(){
 
         var testdata = [
@@ -250,7 +251,8 @@ var MembersChart = {
                 .id('donut1'); // allow custom CSS for this one svg
             chart1.title("Members");
             chart1.pie.donutLabelsOutside(true).donut(true);
-            d3.select("#divInnerMemberDoughnutChart svg")
+            //d3.select("#divInnerMemberDoughnutChart svg")
+            d3.select("#memberDoughnut")
                 .datum(testdata)
                 .transition().duration(1200)
                 .call(chart1);
@@ -277,9 +279,103 @@ var MembersChart = {
         },  // call back from .addGraph
             function(_chart){
                 MembersChart.chart = _chart;
+                MembersChart.chart.pie.dispatch.on("elementClick", function(e){
+
+                    // the thing you pick on is:
+                    // e.data.key = 'slice name' // "At Risk"
+                    // e.data.y = value          // 7
+
+                    // hide main chart
+                    var $memberDoughnut = $("#memberDoughnut");
+                    $memberDoughnut.toggle();
+
+                    // show child
+                    $("#memberDoughnutChild").toggle();
+                    if(MemberDonutChildLineChart._chart !== null){
+                        MemberDonutChildLineChart.makeChart();
+                    }
+
+                    // show back button
+                    $("#childBackButton").toggle();
+
+                    $("#" + chartMap.memberDoughnut.inner).css( "padding-left", "0px" );
+                    $("#" + chartMap.memberDoughnut.inner).css( "margin-left", "-20px" );
+
+                    console.log(e);
+                });
             });
 
     }
+};
+
+var MemberDonutChildLineChart = {
+    chart : null,
+    labels : [
+        {val: "Slow"},
+        {val: "Features"},
+        {val: "Other"},
+        {val: "Closing"},
+        {val: "Too Complex"},
+        {val: "Tired"},
+        {val: "Test"}
+    ],
+    data : [
+        {x: 0, y: 3},
+        {x: 1, y: 8},
+        {x: 2, y: 2},
+        {x: 3, y: 6},
+        {x: 4, y: 10},
+        {x: 5, y: 5},
+        {x: 6, y: 3}
+    ],
+    makeChart : function(){
+        var doChartWork = function(){
+            //Line chart data should be sent as an array of series objects.
+            var chartData = [
+                {
+                    values: MemberDonutChildLineChart.data,      //values - represents the array of {x,y} data points
+                    key: 'Reasons', //key  - the name of the series.
+                    color: '#c844ff'  //color - optional: choose your own line color.
+                }
+            ];
+
+            /*These lines are all chart setup.  Pick and choose which chart features you want to utilize. */
+            nv.addGraph(function() {
+                    var chart = nv.models.lineChart()
+                            .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                            .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                            .showLegend(false)       //Show the legend, allowing users to turn on/off line series.
+                            .showYAxis(true)        //Show the y-axis
+                            .showXAxis(true)        //Show the x-axis
+                            .useInteractiveGuideline(false)
+                        ;
+                    chart.xAxis     //Chart x-axis settings
+                        .axisLabel('Reasons')
+                        .tickValues([0,1,2,3,4,5,6])
+                        .tickFormat(function(d) {
+                            return MemberDonutChildLineChart.labels[d].val;
+                        })
+                        .rotateLabels('-30');
+
+                    chart.yAxis     //Chart y-axis settings
+                        .axisLabel('Count');
+                        //.scale(axisScale);
+
+                    chart.forceY([0, 20]);
+
+                    d3.select('#memberDoughnutChild')    //Select the <svg> element you want to render the chart in.
+                        .datum(chartData)         //Populate the <svg> element with chart data...
+                        .call(chart);          //Finally, render the chart!
+                    return chart;
+                },  // call back from .addGraph
+                function(_chart){
+                    MemberDonutChildLineChart.chart = _chart;
+                }
+            );
+        }; // doChartWork
+
+        doChartWork();
+    } // makeChart
 };
 
 var MembersChartNumbers = {
@@ -362,6 +458,24 @@ var globalTableBack = function(){
     return true;
 };
 
+// hack helper to hide dyno result table and reshow chart .... hackity hack, don't look back
+var globalChildBack = function(){
+
+    // hide child
+    $("#memberDoughnutChild").toggle();
+
+    // hide back button
+    $("#childBackButton").toggle();
+
+    // show main
+    $("#memberDoughnut").toggle();
+
+    $("#" + chartMap.memberDoughnut.inner).css( "padding-left", "20px" );
+    $("#" + chartMap.memberDoughnut.inner).css( "margin-left", "0px" );
+
+    return true;
+};
+
 var ClassMetricsLineChart = {
     attendanceCountDisabled : false, // have these because __data__ is weird for this one, but LineChart needs array of both disabled series object
     reservationCountDisabled : false,
@@ -402,10 +516,6 @@ var ClassMetricsLineChart = {
 
                 chart.yAxis     //Chart y-axis settings
                     .axisLabel('Count');
-                //.tickFormat(d3.format('.02f'));
-
-                // /* Done setting the chart up? Time to render it!*/
-                // var myData = sinAndCos();   //You need data...
 
                 d3.select('#divInnerClassMetricsChart svg')    //Select the <svg> element you want to render the chart in.
                     .datum(chartData)         //Populate the <svg> element with chart data...
@@ -436,13 +546,7 @@ var ClassMetricsLineChart = {
                         $lineChartSvg.toggle();
                         $lineChartSvg.after(chartMap.makeFakeChart(attCount, rezyCount));
 
-                        console.log(e);
-
-
-                        //$("#modalTest").modal('show');
-
-                        // console.log('element: ' + e.value);
-                        // console.dir(e.point);
+                        //console.log(e);
                     });
                     ClassMetricsLineChart.chart.legend.dispatch.on("legendClick", function(__data__){
                         // weird, sometimes there is no .disabled property!!
